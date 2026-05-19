@@ -38,9 +38,9 @@ def test_lint_detects_streamlit_readme_path_mismatch(tmp_path: Path, monkeypatch
         runs_dir=out / "runs",
         reconcile_dir=out / "reconcile",
     )
-    monkeypatch.setattr(lint_mod, "resolve_paths", lambda _: paths)
+    monkeypatch.setattr(lint_mod, "resolve_paths", lambda *args, **kwargs: paths)
 
-    rc = lint_mod.cmd_lint(Namespace(repo_root=str(repo_root), strict=False))
-    assert rc in (0, 1)
+    rc = lint_mod.cmd_lint(Namespace(repo_root=str(repo_root), strict=False, profile="governed"))
+    assert rc in (0, 1, 20, 30)
     report = read_text(contracts / "lint_report.json")
     assert "streamlit_readme_path_mismatch" in report

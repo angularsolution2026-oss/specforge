@@ -61,8 +61,33 @@ def _try_load_json(path: Path) -> dict | list | None:
     return json.loads(read_text(path))
 
 
+def _remove_if_exists(path: Path) -> None:
+    if path.exists():
+        path.unlink()
+
+
+def _route_parse_diagnostics(text: str) -> dict:
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    candidates = [ln for ln in lines if "/" in ln and "http://" not in ln.lower() and "https://" not in ln.lower()]
+    recognized = extract_routes(text)
+    unknown: list[str] = []
+    for ln in candidates:
+        if not any(r in ln for r in recognized):
+            unknown.append(ln[:120])
+    candidate_count = len(candidates)
+    recognized_count = len(recognized)
+    confidence = 1.0 if candidate_count == 0 else max(0.0, min(1.0, recognized_count / candidate_count))
+    return {
+        "candidate_count": candidate_count,
+        "recognized_count": recognized_count,
+        "unknown_fragments": unknown[:20],
+        "confidence": round(confidence, 3),
+    }
+
+
 def cmd_normalize(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
+    out_root = Path(args.out_root) if getattr(args, "out_root", None) else None
+    paths = resolve_paths(Path(args.repo_root), out_root=out_root)
     ensure_out_dirs(paths)
     warnings: list[str] = []
 
@@ -85,8 +110,11 @@ def cmd_normalize(args: Namespace) -> int:
         api_contracts.extend(_parse_api_contracts(txt, str(p.relative_to(paths.repo_root)).replace("\\", "/")))
 
     ia_routes = []
+    parser_diagnostics = {"generated_at": now_iso(), "source": "docs/spec/website-structure.md", "candidate_count": 0, "recognized_count": 0, "unknown_fragments": [], "confidence": 1.0}
     if ia.exists():
-        ia_routes = extract_routes(read_text(ia))
+        ia_text = read_text(ia)
+        ia_routes = extract_routes(ia_text)
+        parser_diagnostics = {"generated_at": now_iso(), "source": "docs/spec/website-structure.md", **_route_parse_diagnostics(ia_text)}
     known = {r.route for r in route_contracts}
     for r in ia_routes:
         r = r.strip().strip("`").split(",")[0].strip()
@@ -141,6 +169,7 @@ def cmd_normalize(args: Namespace) -> int:
     write_json(paths.contracts_dir / "gate_matrix.json", gate_matrix)
     write_json(paths.contracts_dir / "checkpoint_policy.json", checkpoint_policy)
     write_json(paths.contracts_dir / "seed_schema_manifest.json", seed_schema_manifest)
+    write_json(paths.contracts_dir / "parser_diagnostics.json", parser_diagnostics)
 
     ca_path = paths.repo_root / ".ai/registry/CANONICAL_AUTHORITY.json"
     own_path = paths.repo_root / ".ai/registry/FILE_OWNERSHIP_MAP.json"
@@ -151,6 +180,7 @@ def cmd_normalize(args: Namespace) -> int:
         ca_model = CanonicalAuthority.model_validate(canonical)
         write_json(paths.contracts_dir / "canonical_authority.json", ca_model.model_dump())
     else:
+        _remove_if_exists(paths.contracts_dir / "canonical_authority.json")
         warnings.append("CANONICAL_AUTHORITY.json missing")
 
     ownership = _try_load_json(own_path)
@@ -158,6 +188,7 @@ def cmd_normalize(args: Namespace) -> int:
         own_model = FileOwnershipMap.model_validate(ownership)
         write_json(paths.contracts_dir / "ownership_contracts.json", own_model.model_dump())
     else:
+        _remove_if_exists(paths.contracts_dir / "ownership_contracts.json")
         warnings.append("FILE_OWNERSHIP_MAP.json missing")
 
     task_graph = _try_load_json(tg_path)
@@ -165,6 +196,7 @@ def cmd_normalize(args: Namespace) -> int:
         tg_model = TaskGraph.model_validate(task_graph)
         write_json(paths.contracts_dir / "task_graph_contracts.json", tg_model.model_dump())
     else:
+        _remove_if_exists(paths.contracts_dir / "task_graph_contracts.json")
         warnings.append("TASK_GRAPH.json missing")
 
     print(f"WROTE_DIR={paths.contracts_dir}")

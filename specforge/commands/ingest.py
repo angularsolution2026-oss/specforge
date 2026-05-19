@@ -8,7 +8,8 @@ from ..utils import now_iso, read_text, write_json
 
 
 def cmd_ingest(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
+    out_root = Path(args.out_root) if getattr(args, "out_root", None) else None
+    paths = resolve_paths(Path(args.repo_root), out_root=out_root)
     ensure_out_dirs(paths)
 
     include_dirs = ["docs/spec", ".ai", "tools", "data/seeds"]
