@@ -1,0 +1,22 @@
+[
+  {
+    "endpoint": "/api/leads",
+    "method": "POST",
+    "source": "docs/spec/06-app-router-structure.md"
+  },
+  {
+    "endpoint": "/api/revalidate",
+    "method": "POST",
+    "source": "docs/spec/06-app-router-structure.md"
+  },
+  {
+    "endpoint": "/api/tiles/manifest",
+    "method": "POST",
+    "source": "docs/spec/06-app-router-structure.md"
+  },
+  {
+    "endpoint": "/api/tiles/token",
+    "method": "POST",
+    "source": "docs/spec/06-app-router-structure.md"
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-05-19T14:04:08",
+  "task_id": "P0-000",
+  "checkpoint_cp0_status": "pending",
+  "task_state_mentions_task": true,
+  "progress_mentions_task": true,
+  "task_graph_mentions_task": true,
+  "recommendation": "Checkpoint CP-0 not approved; keep execute blocked."
+}

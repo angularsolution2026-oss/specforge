@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GateMatrix",
+  "type": "object",
+  "required": ["generated_at", "source", "tiers_detected"],
+  "properties": {
+    "generated_at": { "type": "string" },
+    "source": { "type": "string" },
+    "tiers_detected": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

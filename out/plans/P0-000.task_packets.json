@@ -1,0 +1,149 @@
+{
+  "generated_at": "2026-05-19T14:04:07",
+  "task_id": "P0-000",
+  "packet_count": 5,
+  "packets": [
+    {
+      "task_id": "P0-000",
+      "lane_id": "A",
+      "owner": "Architect Agent (lead), Security Agent, Backend Builder Agent (API stubs only)",
+      "objective": "Execute lane A for P0-000",
+      "allowed_files": [
+        "next.config.ts",
+        "tsconfig.json",
+        "package.json",
+        "eslint.config.mjs",
+        "lib/env.ts",
+        "lib/**/*.ts",
+        "app/api/**/route.ts",
+        ".gitignore",
+        "middleware.ts"
+      ],
+      "forbidden_files": [
+        "app/(marketing)/**/page.tsx` content beyond null stub",
+        "components/**` UI implementation",
+        "components/seo/schemas/*.tsx` implementation",
+        ".env.local",
+        "docs/spec/**",
+        "Wiring Firebase, Payload, Sentry in runtime"
+      ],
+      "required_gates": [
+        "tier1"
+      ],
+      "refs": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md",
+        ".ai/core/quality-gates.md"
+      ]
+    },
+    {
+      "task_id": "P0-000",
+      "lane_id": "B",
+      "owner": "Frontend Builder Agent",
+      "objective": "Execute lane B for P0-000",
+      "allowed_files": [
+        "app/(marketing)/**",
+        "app/(compliance)/**",
+        "app/portals/**",
+        "app/broker/**",
+        "app/not-found.tsx`, `error.tsx`, `offline.tsx",
+        "app/globals.css",
+        "tailwind.config.ts",
+        "components/**",
+        "components/map/.gitkeep` or `README.md"
+      ],
+      "forbidden_files": [
+        "next.config.ts`, `middleware.ts` security",
+        "app/api/**",
+        "app/sitemap.ts` logic",
+        "maplibre-gl`, `pmtiles` imports anywhere",
+        "Real homepage sections, LeadForm, Header/Footer production UI",
+        "Framer Motion` usage in pages"
+      ],
+      "required_gates": [
+        "tier1"
+      ],
+      "refs": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md",
+        ".ai/core/quality-gates.md"
+      ]
+    },
+    {
+      "task_id": "P0-000",
+      "lane_id": "C",
+      "owner": "SEO Editor Agent",
+      "objective": "Execute lane C for P0-000",
+      "allowed_files": [
+        "app/sitemap.ts",
+        "public/robots.txt",
+        "app/robots.ts",
+        "lib/seo/slugify.ts",
+        "lib/seo/canonical.ts",
+        "components/seo/PageMeta.tsx",
+        "components/seo/schemas/*.tsx"
+      ],
+      "forbidden_files": [
+        "page.tsx` body content",
+        "next.config.ts` redirects",
+        "Rendering schema on stubs",
+        "Inventing meta copy for 1A routes"
+      ],
+      "required_gates": [
+        "tier1"
+      ],
+      "refs": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md",
+        ".ai/core/quality-gates.md"
+      ]
+    },
+    {
+      "task_id": "P0-000",
+      "lane_id": "D",
+      "owner": "QA Auditor Agent (lead), Performance Agent",
+      "objective": "Execute lane D for P0-000",
+      "allowed_files": [
+        ".ai/tasks/P0-000.validation-report.md",
+        "scripts/verify-phase0.ps1"
+      ],
+      "forbidden_files": [
+        "Feature implementation fixes outside failed gate scope",
+        "Waiving Tier 1 failures"
+      ],
+      "required_gates": [
+        "tier1"
+      ],
+      "refs": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md",
+        ".ai/core/quality-gates.md"
+      ]
+    },
+    {
+      "task_id": "P0-000",
+      "lane_id": "E",
+      "owner": "Orchestrator Agent",
+      "objective": "Execute lane E for P0-000",
+      "allowed_files": [
+        ".ai/planning/GAP_REGISTER.md",
+        ".ai/planning/DECISION_LOG.md",
+        ".ai/state/task-state.md",
+        ".ai/planning/TASK_GRAPH.md",
+        "docs/ai/tasks/P0-000.*.md"
+      ],
+      "forbidden_files": [
+        "Application source except documented coordination",
+        "Silent gap closure"
+      ],
+      "required_gates": [
+        "tier1"
+      ],
+      "refs": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md",
+        ".ai/core/quality-gates.md"
+      ]
+    }
+  ]
+}

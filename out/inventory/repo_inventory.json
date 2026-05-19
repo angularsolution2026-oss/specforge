@@ -1,0 +1,1255 @@
+{
+  "generated_at": "2026-05-19T14:30:48",
+  "repo_root": "F:\\260516-honghac",
+  "included": [
+    "docs/spec",
+    ".ai",
+    "tools",
+    "data/seeds"
+  ],
+  "file_count": 207,
+  "files": [
+    {
+      "path": "docs/spec/00-master-instruction.md",
+      "bytes": 11838,
+      "line_count": 253,
+      "heading_count": 24
+    },
+    {
+      "path": "docs/spec/01-project-overview.md",
+      "bytes": 4960,
+      "line_count": 157,
+      "heading_count": 15
+    },
+    {
+      "path": "docs/spec/02-tech-stack.md",
+      "bytes": 13422,
+      "line_count": 253,
+      "heading_count": 14
+    },
+    {
+      "path": "docs/spec/03-user-roles-permissions.md",
+      "bytes": 7501,
+      "line_count": 158,
+      "heading_count": 11
+    },
+    {
+      "path": "docs/spec/04-features-priority.md",
+      "bytes": 10655,
+      "line_count": 242,
+      "heading_count": 20
+    },
+    {
+      "path": "docs/spec/05-database-schema.md",
+      "bytes": 19750,
+      "line_count": 414,
+      "heading_count": 37
+    },
+    {
+      "path": "docs/spec/06-app-router-structure.md",
+      "bytes": 18341,
+      "line_count": 423,
+      "heading_count": 20
+    },
+    {
+      "path": "docs/spec/07-ui-ux-design-system.md",
+      "bytes": 14538,
+      "line_count": 321,
+      "heading_count": 19
+    },
+    {
+      "path": "docs/spec/08-lead-capture-cro.md",
+      "bytes": 8920,
+      "line_count": 230,
+      "heading_count": 16
+    },
+    {
+      "path": "docs/spec/10-admin-dashboard.md",
+      "bytes": 8265,
+      "line_count": 223,
+      "heading_count": 25
+    },
+    {
+      "path": "docs/spec/11-performance.md",
+      "bytes": 6318,
+      "line_count": 150,
+      "heading_count": 13
+    },
+    {
+      "path": "docs/spec/12-analytics-tracking.md",
+      "bytes": 5012,
+      "line_count": 141,
+      "heading_count": 13
+    },
+    {
+      "path": "docs/spec/13-privacy-legal.md",
+      "bytes": 4829,
+      "line_count": 122,
+      "heading_count": 10
+    },
+    {
+      "path": "docs/spec/15-content-governance.md",
+      "bytes": 4945,
+      "line_count": 138,
+      "heading_count": 11
+    },
+    {
+      "path": "docs/spec/16-scoring-quality-gate.md",
+      "bytes": 8131,
+      "line_count": 241,
+      "heading_count": 22
+    },
+    {
+      "path": "docs/spec/17-launch-data-readiness.md",
+      "bytes": 15362,
+      "line_count": 221,
+      "heading_count": 9
+    },
+    {
+      "path": "docs/spec/website-structure.md",
+      "bytes": 17769,
+      "line_count": 458,
+      "heading_count": 25
+    },
+    {
+      "path": "docs/spec/09-seo-strategy.md",
+      "bytes": 8185,
+      "line_count": 231,
+      "heading_count": 23
+    },
+    {
+      "path": "docs/spec/14-schema-markup.md",
+      "bytes": 5689,
+      "line_count": 210,
+      "heading_count": 11
+    },
+    {
+      "path": ".ai/README.md",
+      "bytes": 1950,
+      "line_count": 51,
+      "heading_count": 4
+    },
+    {
+      "path": ".ai/core/rules.md",
+      "bytes": 9594,
+      "line_count": 229,
+      "heading_count": 15
+    },
+    {
+      "path": ".ai/core/orchestration.md",
+      "bytes": 5504,
+      "line_count": 115,
+      "heading_count": 7
+    },
+    {
+      "path": ".ai/core/done-criteria.md",
+      "bytes": 6199,
+      "line_count": 154,
+      "heading_count": 14
+    },
+    {
+      "path": ".ai/core/quality-gates.md",
+      "bytes": 5798,
+      "line_count": 157,
+      "heading_count": 13
+    },
+    {
+      "path": ".ai/core/delivery-gate.md",
+      "bytes": 2766,
+      "line_count": 78,
+      "heading_count": 5
+    },
+    {
+      "path": ".ai/registry/agents.registry.md",
+      "bytes": 7381,
+      "line_count": 161,
+      "heading_count": 14
+    },
+    {
+      "path": ".ai/registry/skills.registry.md",
+      "bytes": 7480,
+      "line_count": 295,
+      "heading_count": 22
+    },
+    {
+      "path": ".ai/state/task-state.md",
+      "bytes": 5534,
+      "line_count": 130,
+      "heading_count": 11
+    },
+    {
+      "path": ".ai/state/checkpoints.json",
+      "bytes": 1079,
+      "line_count": 32,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/manifest/starter-manifest.md",
+      "bytes": 4299,
+      "line_count": 133,
+      "heading_count": 10
+    },
+    {
+      "path": ".ai/governance/ARCHITECTURE_IMMUTABLES.md",
+      "bytes": 5331,
+      "line_count": 158,
+      "heading_count": 14
+    },
+    {
+      "path": ".ai/governance/AGENT_HANDOFF_PROTOCOL.md",
+      "bytes": 5719,
+      "line_count": 235,
+      "heading_count": 15
+    },
+    {
+      "path": ".ai/governance/ROLLBACK_POLICY.md",
+      "bytes": 4489,
+      "line_count": 145,
+      "heading_count": 15
+    },
+    {
+      "path": ".ai/governance/KNOWN_FAILURE_PATTERNS.md",
+      "bytes": 6861,
+      "line_count": 237,
+      "heading_count": 21
+    },
+    {
+      "path": ".ai/governance/FILE_OWNERSHIP_MAP.md",
+      "bytes": 7073,
+      "line_count": 219,
+      "heading_count": 16
+    },
+    {
+      "path": ".ai/runtime/BROWSER_AUTOMATION_RULES.md",
+      "bytes": 5459,
+      "line_count": 136,
+      "heading_count": 11
+    },
+    {
+      "path": ".ai/runtime/UI_EXPLORATION_PROTOCOL.md",
+      "bytes": 7472,
+      "line_count": 231,
+      "heading_count": 21
+    },
+    {
+      "path": ".ai/runtime/LOCALHOST_RUNTIME_WORKFLOW.md",
+      "bytes": 6229,
+      "line_count": 264,
+      "heading_count": 24
+    },
+    {
+      "path": ".ai/runtime/VISUAL_REVIEW_CRITERIA.md",
+      "bytes": 5431,
+      "line_count": 180,
+      "heading_count": 20
+    },
+    {
+      "path": ".ai/runtime/TASK_SWITCHBOARD.md",
+      "bytes": 3211,
+      "line_count": 102,
+      "heading_count": 7
+    },
+    {
+      "path": ".ai/planning/TASK_GRAPH.md",
+      "bytes": 4935,
+      "line_count": 129,
+      "heading_count": 11
+    },
+    {
+      "path": ".ai/planning/MVP_SCOPE.md",
+      "bytes": 2966,
+      "line_count": 103,
+      "heading_count": 10
+    },
+    {
+      "path": ".ai/planning/CURRENT_ARCHITECTURE.md",
+      "bytes": 4197,
+      "line_count": 152,
+      "heading_count": 12
+    },
+    {
+      "path": ".ai/planning/PROGRESS_CHECKLIST.md",
+      "bytes": 5447,
+      "line_count": 158,
+      "heading_count": 12
+    },
+    {
+      "path": ".ai/planning/SPEC_DIGEST.md",
+      "bytes": 8110,
+      "line_count": 258,
+      "heading_count": 22
+    },
+    {
+      "path": ".ai/planning/GAP_REGISTER.md",
+      "bytes": 4478,
+      "line_count": 125,
+      "heading_count": 11
+    },
+    {
+      "path": ".ai/planning/PHASE_PLAN.md",
+      "bytes": 12693,
+      "line_count": 356,
+      "heading_count": 16
+    },
+    {
+      "path": ".ai/planning/DECISION_LOG.md",
+      "bytes": 20349,
+      "line_count": 314,
+      "heading_count": 24
+    },
+    {
+      "path": ".ai/onboarding/AI_ONBOARDING.md",
+      "bytes": 5394,
+      "line_count": 142,
+      "heading_count": 9
+    },
+    {
+      "path": ".ai/onboarding/CONTEXT_BUDGET.md",
+      "bytes": 3812,
+      "line_count": 118,
+      "heading_count": 11
+    },
+    {
+      "path": ".ai/onboarding/README_SYNC_POLICY.md",
+      "bytes": 2763,
+      "line_count": 106,
+      "heading_count": 12
+    },
+    {
+      "path": ".ai/tasks/P0-000.plan.md",
+      "bytes": 11771,
+      "line_count": 329,
+      "heading_count": 28
+    },
+    {
+      "path": ".ai/tasks/P0-000.parallel-lanes.md",
+      "bytes": 10560,
+      "line_count": 304,
+      "heading_count": 31
+    },
+    {
+      "path": ".ai/tasks/P0-000.validation-report.md",
+      "bytes": 7909,
+      "line_count": 290,
+      "heading_count": 18
+    },
+    {
+      "path": ".ai/evidence/spec-contract-audit.md",
+      "bytes": 14556,
+      "line_count": 287,
+      "heading_count": 42
+    },
+    {
+      "path": ".ai/evidence/spec-contract-audit.json",
+      "bytes": 17525,
+      "line_count": 341,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/prompts/MASTER_AI_CODING_PROMPT.md",
+      "bytes": 3037,
+      "line_count": 81,
+      "heading_count": 2
+    },
+    {
+      "path": ".ai/evidence/runtime/.gitkeep",
+      "bytes": 137,
+      "line_count": 2,
+      "heading_count": 2
+    },
+    {
+      "path": ".ai/evidence/regression/.gitkeep",
+      "bytes": 128,
+      "line_count": 2,
+      "heading_count": 2
+    },
+    {
+      "path": ".ai/evidence/repo_index/repo.tree.txt",
+      "bytes": 11315,
+      "line_count": 304,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/repo_index/repo.index.jsonl",
+      "bytes": 573377,
+      "line_count": 231,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/repo_index/repo.dupes.json",
+      "bytes": 7086,
+      "line_count": 86,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/repo_index/repo.corpus.jsonl",
+      "bytes": 994261,
+      "line_count": 230,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/repo_index/repo.manifest.json",
+      "bytes": 386,
+      "line_count": 13,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/repo_index/repo.corpus.manifest.json",
+      "bytes": 507,
+      "line_count": 11,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/prompts/P0-000.MASTER_PROMPT.md",
+      "bytes": 3008,
+      "line_count": 81,
+      "heading_count": 2
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214034/P0-000.file-locks.md",
+      "bytes": 2059,
+      "line_count": 37,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214034/manifest.json",
+      "bytes": 898,
+      "line_count": 20,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214110/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214110/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-215010/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-215010/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-225900/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-225900/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-230524/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-230524/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-233149/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-233149/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000821/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000821/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000943/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000943/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-005250/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-005250/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010631/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010631/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010648/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010648/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-011315/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-011315/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-112352/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-112352/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-120058/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-120058/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140349/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140349/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140409/P0-000.file-locks.md",
+      "bytes": 1996,
+      "line_count": 36,
+      "heading_count": 1
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140409/manifest.json",
+      "bytes": 927,
+      "line_count": 21,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214034/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214034/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214034/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214034/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 907,
+      "line_count": 29,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214034/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 936,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214110/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214110/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214110/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214110/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-214110/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 936,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-215010/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-215010/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-215010/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-215010/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260517-215010/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 936,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-225900/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-225900/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-225900/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-225900/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-225900/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 936,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-230524/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-230524/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-230524/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-230524/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-230524/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 936,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-233149/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-233149/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-233149/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-233149/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260518-233149/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000821/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000821/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000821/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000821/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000821/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000943/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000943/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000943/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000943/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-000943/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-005250/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-005250/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-005250/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-005250/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-005250/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010631/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010631/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010631/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010631/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010631/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010648/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010648/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010648/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010648/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-010648/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-011315/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-011315/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-011315/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-011315/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-011315/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-112352/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-112352/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-112352/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-112352/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-112352/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-120058/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-120058/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-120058/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-120058/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-120058/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140349/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140349/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140349/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140349/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140349/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140409/task_packets/P0-000.lane-A.TASK_PACKET.yaml",
+      "bytes": 1201,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140409/task_packets/P0-000.lane-B.TASK_PACKET.yaml",
+      "bytes": 1193,
+      "line_count": 39,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140409/task_packets/P0-000.lane-C.TASK_PACKET.yaml",
+      "bytes": 1026,
+      "line_count": 35,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140409/task_packets/P0-000.lane-D.TASK_PACKET.yaml",
+      "bytes": 879,
+      "line_count": 28,
+      "heading_count": 0
+    },
+    {
+      "path": ".ai/evidence/executor/P0-000/20260519-140409/task_packets/P0-000.lane-E.TASK_PACKET.yaml",
+      "bytes": 959,
+      "line_count": 31,
+      "heading_count": 0
+    },
+    {
+      "path": "tools/index_repo.py",
+      "bytes": 19204,
+      "line_count": 555,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/INDEX_REPO.md",
+      "bytes": 2827,
+      "line_count": 66,
+      "heading_count": 8
+    },
+    {
+      "path": "tools/build_corpus.py",
+      "bytes": 7395,
+      "line_count": 214,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/ai_executor.py",
+      "bytes": 12362,
+      "line_count": 349,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/AI_EXECUTOR.md",
+      "bytes": 1711,
+      "line_count": 50,
+      "heading_count": 4
+    },
+    {
+      "path": "tools/GIT_TRACKED_ONLY.md",
+      "bytes": 563,
+      "line_count": 17,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/REPO_INDEX_STALENESS.md",
+      "bytes": 755,
+      "line_count": 26,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/spec_contract_audit.py",
+      "bytes": 26274,
+      "line_count": 660,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/cau_dao.py",
+      "bytes": 6252,
+      "line_count": 203,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/CAU_DAO.md",
+      "bytes": 2514,
+      "line_count": 82,
+      "heading_count": 9
+    },
+    {
+      "path": "tools/ai_switchboard.py",
+      "bytes": 12614,
+      "line_count": 373,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/AI_SWITCHBOARD.md",
+      "bytes": 1532,
+      "line_count": 50,
+      "heading_count": 5
+    },
+    {
+      "path": "tools/switchboard_ui.py",
+      "bytes": 4768,
+      "line_count": 137,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/__pycache__/index_repo.cpython-314.pyc",
+      "bytes": 30558,
+      "line_count": 1064,
+      "heading_count": 6
+    },
+    {
+      "path": "tools/__pycache__/spec_contract_audit.cpython-314.pyc",
+      "bytes": 29603,
+      "line_count": 702,
+      "heading_count": 5
+    },
+    {
+      "path": "tools/__pycache__/ai_switchboard.cpython-314.pyc",
+      "bytes": 24523,
+      "line_count": 766,
+      "heading_count": 2
+    },
+    {
+      "path": "tools/spec-generator/config.yaml",
+      "bytes": 5415,
+      "line_count": 189,
+      "heading_count": 1
+    },
+    {
+      "path": "tools/spec-generator/generate.py",
+      "bytes": 9547,
+      "line_count": 280,
+      "heading_count": 2
+    },
+    {
+      "path": "data/seeds/README.md",
+      "bytes": 1958,
+      "line_count": 43,
+      "heading_count": 4
+    },
+    {
+      "path": "data/seeds/inventory-lots.demo.json",
+      "bytes": 31115,
+      "line_count": 820,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/bank-rates.demo.json",
+      "bytes": 1676,
+      "line_count": 53,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/admin-users.demo.json",
+      "bytes": 1241,
+      "line_count": 42,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/lead-test-data.demo.json",
+      "bytes": 3149,
+      "line_count": 90,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/media-assets.demo.json",
+      "bytes": 2291,
+      "line_count": 72,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/authors.demo.json",
+      "bytes": 2187,
+      "line_count": 55,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/phases.demo.json",
+      "bytes": 1922,
+      "line_count": 57,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/sales-policy-internal.demo.json",
+      "bytes": 5646,
+      "line_count": 137,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/progress.demo.json",
+      "bytes": 2341,
+      "line_count": 65,
+      "heading_count": 0
+    },
+    {
+      "path": "data/seeds/tier-sources.demo.json",
+      "bytes": 14237,
+      "line_count": 285,
+      "heading_count": 0
+    }
+  ]
+}

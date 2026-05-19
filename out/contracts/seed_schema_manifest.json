@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-05-19T14:30:54",
+  "source": "data/seeds",
+  "is_demo_rules_present": true,
+  "seed_files": [
+    "admin-users.demo.json",
+    "authors.demo.json",
+    "bank-rates.demo.json",
+    "inventory-lots.demo.json",
+    "lead-test-data.demo.json",
+    "media-assets.demo.json",
+    "phases.demo.json",
+    "progress.demo.json",
+    "sales-policy-internal.demo.json",
+    "tier-sources.demo.json"
+  ]
+}

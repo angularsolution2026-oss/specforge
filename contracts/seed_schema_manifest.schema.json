@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SeedSchemaManifest",
+  "type": "object",
+  "required": ["generated_at", "source", "is_demo_rules_present", "seed_files"],
+  "properties": {
+    "generated_at": { "type": "string" },
+    "source": { "type": "string" },
+    "is_demo_rules_present": { "type": "boolean" },
+    "seed_files": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

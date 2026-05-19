@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CheckpointPolicy",
+  "type": "object",
+  "required": ["generated_at", "source", "tasks"],
+  "properties": {
+    "generated_at": { "type": "string" },
+    "source": { "type": "string" },
+    "tasks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "required_for_execute": { "type": "array", "items": { "type": "string" } },
+          "checkpoints": { "type": "object" }
+        }
+      }
+    }
+  }
+}

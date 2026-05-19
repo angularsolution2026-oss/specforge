@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ApiContracts",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["endpoint", "method", "source"],
+    "properties": {
+      "endpoint": { "type": "string" },
+      "method": { "type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+      "source": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-05-19T14:30:54",
+  "source": ".ai/state/checkpoints.json",
+  "tasks": {
+    "P0-000": {
+      "required_for_execute": [
+        "CP-0"
+      ],
+      "checkpoints": {
+        "CP-0": {
+          "status": "pending",
+          "description": "Approve P0-000 scaffold execution"
+        },
+        "CP-1": {
+          "status": "approved",
+          "description": "GAP-4 resolved: top nav excludes Bang gia / Phap ly and uses public label Sa ban for /sa-ban",
+          "updated_at": "2026-05-18T23:20:00",
+          "updated_by": "human",
+          "reason": "User approved removing AI from public nav label; top nav remains 00 §5.1 without Bang gia / Phap ly."
+        },
+        "CP-2": {
+          "status": "approved",
+          "description": "GAP-1/GAP-2 env key handling approved: NEXT_PUBLIC_SENTRY_DSN and NEXT_PUBLIC_COMPANY_NAME included"
+        },
+        "CP-3": {
+          "status": "approved",
+          "description": "GAP-3 resolved: include /tu-van/[author-slug] author profile route stub"
+        },
+        "CP-4": {
+          "status": "pending",
+          "description": "Approve validation PASS"
+        }
+      }
+    }
+  }
+}

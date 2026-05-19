@@ -1,0 +1,590 @@
+[
+  {
+    "route": "/",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P0",
+    "sprint": "1A"
+  },
+  {
+    "route": "//bacninhhonghaccity",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "//honghacphumyhung",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "//phumyhung",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/100",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/3",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/SSR",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/`, `/kham-pha-do-thi",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/admin/login",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/advisor",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/after",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/api/*",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/appreciation",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/backoff",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/bang-gia",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P0",
+    "sprint": "1A"
+  },
+  {
+    "route": "/bang-gia-hong-hac-city",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/bang-gia`, `/phap-ly`, `/kham-pha-do-thi`, etc.",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/blog",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/blog/[slug]",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/broker",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/broker/*",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/cannot",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/chinh-sach-bao-mat",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/community",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/comparison",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/contact",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/context",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/copy",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/current",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/data",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/deferred",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/doi-tac",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P2",
+    "sprint": "2"
+  },
+  {
+    "route": "/du-an/hong-hac-city",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/fallback",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/financial",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/giai",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/hidden",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/hongphat",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/infrastructure",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/kham-pha-do-thi",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P0",
+    "sprint": "1A"
+  },
+  {
+    "route": "/kill",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/lien-he",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": "1A"
+  },
+  {
+    "route": "/lifestyle",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/loading",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/logging",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/noindex",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/payment",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/ph",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phan-khu",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phan-khu/hong-phat",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P1",
+    "sprint": "1B"
+  },
+  {
+    "route": "/phan-khu/hong-phat/gan-cong-vien",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phan-khu/hong-phat/khu-yen-tinh",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phan-khu/hong-phat/phu-hop-gia-dinh",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phan-khu/hong-phat/view-xanh",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phan-khu/hong-phuc",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P2",
+    "sprint": "2"
+  },
+  {
+    "route": "/phan-khu/hong-thinh",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P2",
+    "sprint": "2"
+  },
+  {
+    "route": "/phap-ly",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P0",
+    "sprint": "1A"
+  },
+  {
+    "route": "/phap-ly-hong-hac-city",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phap-ly`, `/tien-do",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/phong-cach-song",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P1",
+    "sprint": "1B"
+  },
+  {
+    "route": "/portals/*",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/portals/admin",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/progress",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/register",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/roi",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": "2"
+  },
+  {
+    "route": "/sa-ban",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "",
+    "sprint": "1A shell / 1B full"
+  },
+  {
+    "route": "/sa-ban/[lot-id]",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P1",
+    "sprint": "1B"
+  },
+  {
+    "route": "/sa-ban` có mặt trong top nav, homepage first viewport và footer decision path",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/sa-ban`, `/phan-khu/hong-phat`, `/tu-van",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/sa-ban`, `/sa-ban/[lot-id]",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/search",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/throttle",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P1",
+    "sprint": "1B"
+  },
+  {
+    "route": "/tiem-nang/2-ty-nen-mua-phan-khu-nao",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/bac-ninh-fdi",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/dong-ha-noi",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/gia-dinh-2-con-chon-phan-khu",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/gia-lam-ket-noi",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/mua-o-that-hay-dau-tu",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/nen-mua-giai-doan-dau-hay-sau",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/so-sanh",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/so-sanh/[slug]",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang/vanh-dai-4",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tiem-nang`, `/tu-van",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tien-do",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P1",
+    "sprint": "1B"
+  },
+  {
+    "route": "/tien-do/cap-nhat-vanh-dai-4",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tien-do/ha-tang-hong-phat",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tien-do/thang-6-2026",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/toggle",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tool",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/tu-van",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "P0",
+    "sprint": "1A"
+  },
+  {
+    "route": "/tu-van/[author-slug]",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/v",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/vay-mua",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": "1B"
+  },
+  {
+    "route": "/vay-mua`, `/bang-gia",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/vi-tri",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/wellness",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/yeu-cau-du-lieu",
+    "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "generated_at": "2026-05-19T14:04:09",
+  "task_id": "P0-000",
+  "mode": "dry-run",
+  "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe tools/ai_executor.py --task P0-000 --mode dry-run",
+  "exit_code": 0,
+  "output": "MODE=dry-run\nTASK=P0-000\nEVIDENCE=.ai\\evidence\\executor\\P0-000\\20260519-140409\nMANIFEST=.ai\\evidence\\executor\\P0-000\\20260519-140409\\manifest.json\nOVERALL=dry_run_complete\n"
+}

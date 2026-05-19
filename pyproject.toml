@@ -1,0 +1,19 @@
+[project]
+name = "specforge"
+version = "0.1.0"
+description = "Spec-to-contract automation toolkit for AI coding workflows"
+requires-python = ">=3.10"
+dependencies = [
+  "pydantic>=2.7.0,<3.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["specforge*"]

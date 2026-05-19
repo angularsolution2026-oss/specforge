@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RouteContracts",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["route", "source"],
+    "properties": {
+      "route": { "type": "string" },
+      "source": { "type": "string" },
+      "priority": { "type": "string" },
+      "sprint": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}
