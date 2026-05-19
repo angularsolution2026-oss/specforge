@@ -30,5 +30,5 @@ jobs:
       - name: Smoke Normalize
         run: python -m specforge --repo-root . normalize
 
-      - name: Smoke Lint
-        run: python -m specforge --repo-root . lint
+      - name: Smoke Lint Standalone
+        run: python -m specforge --repo-root . lint --profile standalone

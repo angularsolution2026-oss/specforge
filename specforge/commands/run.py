@@ -6,6 +6,8 @@ from argparse import Namespace
 from pathlib import Path
 
 from ..config import ensure_out_dirs, resolve_paths
+from ..errors import EXECUTOR_ERROR, OK, PREFLIGHT_BLOCKED
+from ..events import emit_event
 from ..utils import now_iso, read_text, run, write_json
 from ..validators import validate_runtime_preflight
 
@@ -29,6 +31,8 @@ def evaluate_runtime_preflight(
     lint_status: str,
     denied_patterns: list[str],
     mode: str,
+    *,
+    preflight_strict: bool = False,
 ) -> dict:
     checkpoint_failures: list[dict] = []
     file_conflicts: list[dict] = []
@@ -77,7 +81,7 @@ def evaluate_runtime_preflight(
         blockers.append("allowed/forbidden file conflict")
     if preflight["ownership_conflict"]:
         blockers.append("ownership conflict detected")
-    if mode == "execute" and not preflight["strict_lint_pass"]:
+    if (mode == "execute" or preflight_strict) and not preflight["strict_lint_pass"]:
         blockers.append("strict lint is not PASS")
     preflight["blockers"] = blockers
     return preflight
@@ -88,6 +92,11 @@ def cmd_run(args: Namespace) -> int:
     ensure_out_dirs(paths)
     task_id = args.task_id
     mode = args.mode
+    preflight_strict = bool(getattr(args, "preflight_strict", False))
+    allow_executor_on_block = bool(getattr(args, "allow_executor_on_block", False))
+    profile = str(getattr(args, "profile", "standalone"))
+
+    emit_event(paths, event_type="command_started", command="run", task_id=task_id, message="run started", data={"mode": mode, "profile": profile})
 
     packet_path = paths.plans_dir / f"{task_id}.task_packets.json"
     lint_path = paths.contracts_dir / "lint_report.json"
@@ -107,37 +116,64 @@ def cmd_run(args: Namespace) -> int:
         owners = own.get("owners", []) if isinstance(own, dict) else []
         denied_patterns = [x.get("path") for x in owners if x.get("write_policy") == "forbidden" and x.get("path")]
 
-    preflight = evaluate_runtime_preflight(packets, lint_status, denied_patterns, mode)
-
+    preflight = evaluate_runtime_preflight(packets, lint_status, denied_patterns, mode, preflight_strict=preflight_strict)
     preflight_findings = validate_runtime_preflight(preflight)
     blockers: list[str] = list(preflight.get("blockers", []))
     if preflight_findings:
         blockers.extend([f["message"] for f in preflight_findings])
 
-    code = 0
+    code = OK
     output = ""
     executed_command = ""
-    if blockers and mode == "execute":
-        code = 2
+    should_block = bool(blockers) and (mode == "execute" or preflight_strict or not allow_executor_on_block)
+    if should_block:
+        code = PREFLIGHT_BLOCKED
         output = "RUN BLOCKED: " + "; ".join(blockers)
+        emit_event(
+            paths,
+            event_type="preflight_blocked",
+            command="run",
+            task_id=task_id,
+            severity="FAIL",
+            reason_code=str(PREFLIGHT_BLOCKED),
+            message=output,
+            data={"mode": mode, "preflight_strict": preflight_strict, "allow_executor_on_block": allow_executor_on_block},
+        )
     else:
         cmd = [sys.executable, "tools/ai_executor.py", "--task", task_id, "--mode", mode]
         executed_command = " ".join(cmd)
         code, output = run(cmd, cwd=paths.repo_root)
+        if code != 0:
+            code = EXECUTOR_ERROR
 
     report = {
         "generated_at": now_iso(),
         "task_id": task_id,
         "mode": mode,
+        "profile": profile,
+        "preflight_strict": preflight_strict,
+        "allow_executor_on_block": allow_executor_on_block,
         "preflight": preflight,
         "preflight_findings": preflight_findings,
         "blockers": blockers,
         "command": executed_command,
         "exit_code": code,
+        "error_code": code,
         "output": output,
     }
     out = paths.runs_dir / f"{task_id}.{mode}.run_report.json"
     write_json(out, report)
     print(f"WROTE={out}")
     print(f"EXIT_CODE={code}")
+
+    emit_event(
+        paths,
+        event_type="command_completed",
+        command="run",
+        task_id=task_id,
+        severity="FAIL" if code else "INFO",
+        reason_code=str(code),
+        message="run completed",
+        data={"mode": mode, "blocked": should_block, "exit_code": code},
+    )
     return code

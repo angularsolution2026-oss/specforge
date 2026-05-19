@@ -133,7 +133,7 @@ def test_lint_detects_api_drift(tmp_path: Path, monkeypatch):
 
     paths = AppPaths(repo_root=repo_root, app_root=app_root, out_root=app_root / "out", inventory_dir=app_root / "out/inventory", contracts_dir=contracts, plans_dir=app_root / "out/plans", prompts_dir=app_root / "out/prompts", runs_dir=app_root / "out/runs", reconcile_dir=app_root / "out/reconcile")
     monkeypatch.setattr(lint_mod, "resolve_paths", lambda _: paths)
-    lint_mod.cmd_lint(Namespace(repo_root=str(repo_root), strict=False))
+    lint_mod.cmd_lint(Namespace(repo_root=str(repo_root), strict=False, profile="governed"))
     report = read_text(contracts / "lint_report.json")
     assert "api_drift_missing_in_contracts" in report
 
@@ -152,6 +152,6 @@ def test_lint_detects_seed_enum_mismatch(tmp_path: Path, monkeypatch):
 
     paths = AppPaths(repo_root=repo_root, app_root=app_root, out_root=app_root / "out", inventory_dir=app_root / "out/inventory", contracts_dir=contracts, plans_dir=app_root / "out/plans", prompts_dir=app_root / "out/prompts", runs_dir=app_root / "out/runs", reconcile_dir=app_root / "out/reconcile")
     monkeypatch.setattr(lint_mod, "resolve_paths", lambda _: paths)
-    lint_mod.cmd_lint(Namespace(repo_root=str(repo_root), strict=False))
+    lint_mod.cmd_lint(Namespace(repo_root=str(repo_root), strict=False, profile="governed"))
     report = read_text(contracts / "lint_report.json")
     assert "seed_enum_mismatch_inventory_status" in report

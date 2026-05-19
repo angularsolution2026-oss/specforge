@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 from datetime import datetime
@@ -9,6 +10,9 @@ from typing import Iterable
 
 
 def now_iso() -> str:
+    forced = os.getenv("SPECFORGE_NOW", "").strip()
+    if forced:
+        return forced
     return datetime.now().isoformat(timespec="seconds")
 
 

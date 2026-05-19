@@ -23,6 +23,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("normalize", help="Generate core contract JSON files.")
     p_lint = sub.add_parser("lint", help="Lint generated contracts and invariants.")
     p_lint.add_argument("--strict", action="store_true", help="Exit non-zero on WARN/FAIL findings.")
+    p_lint.add_argument("--profile", choices=["standalone", "core", "governed"], default="standalone")
 
     p_plan = sub.add_parser("plan", help="Generate task packets from lane plan.")
     p_plan.add_argument("--task-id", required=True)
@@ -33,6 +34,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_run = sub.add_parser("run", help="Run orchestration hook through ai_executor.")
     p_run.add_argument("--task-id", required=True)
     p_run.add_argument("--mode", choices=["dry-run", "execute"], default="dry-run")
+    p_run.add_argument("--profile", choices=["standalone", "core", "governed"], default="standalone")
+    p_run.add_argument("--preflight-strict", action="store_true")
+    p_run.add_argument("--allow-executor-on-block", action="store_true")
 
     p_reconcile = sub.add_parser("reconcile", help="Snapshot task/checkpoint/state consistency.")
     p_reconcile.add_argument("--task-id", required=True)
@@ -42,6 +46,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_doctor.add_argument("--task-id", required=True)
     p_doctor.add_argument("--sync", action="store_true", help="Forward --sync to reconcile.")
     p_doctor.add_argument("--run-mode", choices=["dry-run", "execute"], default=None, help="Optional run step at end.")
+    p_doctor.add_argument("--profile", choices=["standalone", "core", "governed"], default="standalone")
     return parser
 
 

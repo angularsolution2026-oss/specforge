@@ -15,6 +15,7 @@ class AppPaths:
     prompts_dir: Path
     runs_dir: Path
     reconcile_dir: Path
+    events_dir: Path | None = None
 
 
 def resolve_paths(repo_root: Path) -> AppPaths:
@@ -30,6 +31,7 @@ def resolve_paths(repo_root: Path) -> AppPaths:
         prompts_dir=out_root / "prompts",
         runs_dir=out_root / "runs",
         reconcile_dir=out_root / "reconcile",
+        events_dir=out_root / "events",
     )
 
 
@@ -42,5 +44,8 @@ def ensure_out_dirs(paths: AppPaths) -> None:
         paths.prompts_dir,
         paths.runs_dir,
         paths.reconcile_dir,
+        paths.events_dir,
     ):
+        if p is None:
+            continue
         p.mkdir(parents=True, exist_ok=True)

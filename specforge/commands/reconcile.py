@@ -1,10 +1,15 @@
 from __future__ import annotations
 
 import json
+import re
 from argparse import Namespace
 from pathlib import Path
+from typing import Any
 
 from ..config import ensure_out_dirs, resolve_paths
+from ..errors import GOVERNANCE_ERROR, OK
+from ..events import emit_event
+from ..fsm import validate_transition
 from ..utils import now_iso, read_text, write_json
 
 
@@ -20,7 +25,9 @@ def _append_jsonl(path: Path, payload: dict) -> None:
         fh.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
-def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict:
+def evaluate_evidence(evidence_dir: Path, task_id: str = "", repo_root: Path | None = None) -> dict:
+    if not task_id:
+        task_id = evidence_dir.name
     files: list[str] = []
     if evidence_dir.exists():
         for p in sorted(evidence_dir.rglob("*")):
@@ -56,6 +63,8 @@ def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict
         except Exception:
             return False
 
+    allowed_status = {"PASS", "WARN", "FAIL", "pass", "warn", "fail"}
+
     def _check_manifest(p: Path) -> None:
         data = _read_json(p)
         if data is None or not isinstance(data, dict):
@@ -63,8 +72,11 @@ def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict
             return
         if not data:
             weak.append("manifest.json:empty_object")
-            return
-        useful = {"task_id", "generated_at", "status", "files", "artifacts", "commands", "evidence"}
+        if "task_id" in data and str(data.get("task_id")) != task_id:
+            invalid.append("manifest.json:task_id_mismatch")
+        if "status" in data and str(data.get("status")) not in allowed_status:
+            weak.append("manifest.json:unknown_status")
+        useful = {"task_id", "generated_at", "status", "files", "artifacts", "commands", "evidence", "commit", "branch"}
         if not any(k in data for k in useful):
             weak.append("manifest.json:missing_useful_keys")
 
@@ -73,9 +85,11 @@ def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict
         if data is None or not isinstance(data, dict):
             invalid.append(p.name)
             return
-        useful = {"status", "gates", "results", "passed", "exit_code"}
-        if not any(k in data for k in useful):
-            weak.append(f"{p.name}:missing_useful_keys")
+        if "status" in data and str(data.get("status")) not in allowed_status:
+            weak.append(f"{p.name}:unknown_status")
+        for k in ("gates", "results"):
+            if k in data and not isinstance(data[k], (list, dict)):
+                invalid.append(f"{p.name}:{k}_must_be_list_or_dict")
 
     def _check_lint_report(p: Path) -> None:
         data = _read_json(p)
@@ -83,7 +97,9 @@ def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict
             invalid.append("lint_report.json")
             return
         if "status" not in data:
-            weak.append("lint_report.json:missing_status")
+            invalid.append("lint_report.json:missing_status")
+        elif str(data.get("status")) not in allowed_status:
+            weak.append("lint_report.json:unknown_status")
 
     def _check_run_report(p: Path) -> None:
         data = _read_json(p)
@@ -91,23 +107,42 @@ def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict
             invalid.append("run_report.json")
             return
         if "exit_code" not in data:
-            weak.append("run_report.json:missing_exit_code")
+            invalid.append("run_report.json:missing_exit_code")
+        if "task_id" in data and str(data.get("task_id")) != task_id:
+            invalid.append("run_report.json:task_id_mismatch")
 
     def _check_changed_files(p: Path) -> None:
         data = _read_json(p)
         if data is None:
             invalid.append("changed-files.json")
             return
-        if isinstance(data, (list, dict)) and len(data) == 0:
-            invalid.append("changed-files.json:empty")
+        if isinstance(data, list):
+            if len(data) == 0:
+                invalid.append("changed-files.json:empty")
+            return
+        if isinstance(data, dict):
+            if len(data) == 0:
+                invalid.append("changed-files.json:empty")
+            elif not any(k in data for k in ("files", "changed_files", "artifacts")):
+                weak.append("changed-files.json:missing_common_keys")
+            return
+        invalid.append("changed-files.json:invalid_type")
 
     def _check_patch(p: Path) -> None:
         if not _is_non_empty_text(p):
             invalid.append(p.name)
+            return
+        txt = read_text(p)
+        if "diff --git" not in txt and not ("---" in txt and "+++" in txt):
+            weak.append(f"{p.name}:missing_patch_markers")
 
     def _check_command_log(p: Path) -> None:
         if not _is_non_empty_text(p):
             invalid.append("command-log.txt")
+            return
+        lines = [ln.strip() for ln in read_text(p).splitlines() if ln.strip()]
+        if not any(re.search(r"\b(python|pytest|git|specforge|npm|pip)\b", ln) for ln in lines):
+            weak.append("command-log.txt:no_command_like_lines")
 
     if evidence_dir.exists():
         manifest = evidence_dir / "manifest.json"
@@ -148,24 +183,26 @@ def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict
     }
 
 
+def _next_state_for_reconcile(cp0_status: str, evidence_sufficient: bool) -> str:
+    if cp0_status != "approved":
+        return "blocked"
+    if not evidence_sufficient:
+        return "failed"
+    return "reconciled"
+
+
 def cmd_reconcile(args: Namespace) -> int:
     paths = resolve_paths(Path(args.repo_root))
     ensure_out_dirs(paths)
     task_id = args.task_id
 
+    emit_event(paths, event_type="command_started", command="reconcile", task_id=task_id, message="reconcile started")
+
     checkpoints = _safe_json(paths.repo_root / ".ai/state/checkpoints.json")
     current_json = _safe_json(paths.repo_root / ".ai/state/task-state.current.json")
-    task_state_md = (
-        read_text(paths.repo_root / ".ai/state/task-state.md") if (paths.repo_root / ".ai/state/task-state.md").exists() else ""
-    )
-    progress = (
-        read_text(paths.repo_root / ".ai/planning/PROGRESS_CHECKLIST.md")
-        if (paths.repo_root / ".ai/planning/PROGRESS_CHECKLIST.md").exists()
-        else ""
-    )
-    task_graph_md = (
-        read_text(paths.repo_root / ".ai/planning/TASK_GRAPH.md") if (paths.repo_root / ".ai/planning/TASK_GRAPH.md").exists() else ""
-    )
+    task_state_md = read_text(paths.repo_root / ".ai/state/task-state.md") if (paths.repo_root / ".ai/state/task-state.md").exists() else ""
+    progress = read_text(paths.repo_root / ".ai/planning/PROGRESS_CHECKLIST.md") if (paths.repo_root / ".ai/planning/PROGRESS_CHECKLIST.md").exists() else ""
+    task_graph_md = read_text(paths.repo_root / ".ai/planning/TASK_GRAPH.md") if (paths.repo_root / ".ai/planning/TASK_GRAPH.md").exists() else ""
 
     cp0 = checkpoints.get("tasks", {}).get(task_id, {}).get("checkpoints", {}).get("CP-0", {}).get("status", "missing")
     state_source = "markdown_fallback"
@@ -179,8 +216,14 @@ def cmd_reconcile(args: Namespace) -> int:
                 state_status = current_json.get("tasks", {}).get(task_id, {}).get("status", "unknown")
 
     evidence_dir = paths.repo_root / ".ai/evidence" / task_id
-    evidence_eval = evaluate_evidence(evidence_dir, repo_root=paths.repo_root)
+    evidence_eval = evaluate_evidence(evidence_dir, task_id=task_id, repo_root=paths.repo_root)
     evidence_sufficient = bool(evidence_eval["sufficient"])
+
+    fsm_validation: list[dict[str, Any]] = []
+    if state_status and state_status != "unknown":
+        next_state = _next_state_for_reconcile(cp0, evidence_sufficient)
+        fsm = validate_transition(state_status, next_state)
+        fsm_validation.append({"from": fsm.from_state, "to": fsm.to_state, "valid": fsm.valid, "message": fsm.message})
 
     report = {
         "generated_at": now_iso(),
@@ -192,14 +235,20 @@ def cmd_reconcile(args: Namespace) -> int:
         "progress_mentions_task": task_id in progress,
         "task_graph_mentions_task": task_id in task_graph_md,
         "evidence": {"directory": str(evidence_dir.relative_to(paths.repo_root)).replace("\\", "/"), **evidence_eval},
+        "fsm_validation": fsm_validation,
         "recommendation": "",
+        "reason_code": OK,
     }
     if cp0 != "approved":
         report["recommendation"] = "Checkpoint CP-0 not approved; keep execute blocked."
     elif not evidence_sufficient:
-        report["recommendation"] = "Checkpoint approved but evidence missing; do not mark PASS."
+        report["recommendation"] = "Checkpoint approved but evidence missing/invalid; do not mark PASS."
     else:
         report["recommendation"] = "Checkpoint approved with evidence present; proceed to gate verification."
+
+    invalid_fsm = any(not item["valid"] for item in fsm_validation)
+    if evidence_eval["invalid"] or invalid_fsm:
+        report["reason_code"] = GOVERNANCE_ERROR
 
     out = paths.reconcile_dir / f"{task_id}.reconcile_report.json"
     write_json(out, report)
@@ -222,4 +271,14 @@ def cmd_reconcile(args: Namespace) -> int:
     print(f"WROTE={out}")
     print(f"CP0={cp0}")
     print(f"EVIDENCE_SUFFICIENT={evidence_sufficient}")
-    return 0
+    emit_event(
+        paths,
+        event_type="evidence_evaluated",
+        command="reconcile",
+        task_id=task_id,
+        severity="FAIL" if report["reason_code"] else "INFO",
+        reason_code=str(report["reason_code"]),
+        message="reconcile completed",
+        data={"sufficient": evidence_sufficient, "missing": evidence_eval["missing"], "invalid": evidence_eval["invalid"]},
+    )
+    return int(report["reason_code"])
