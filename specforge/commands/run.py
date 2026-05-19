@@ -88,7 +88,8 @@ def evaluate_runtime_preflight(
 
 
 def cmd_run(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
+    out_root = Path(args.out_root) if getattr(args, "out_root", None) else None
+    paths = resolve_paths(Path(args.repo_root), out_root=out_root)
     ensure_out_dirs(paths)
     task_id = args.task_id
     mode = args.mode

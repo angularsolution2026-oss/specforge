@@ -54,7 +54,7 @@ def test_lint_profiles_governed_missing_contracts(tmp_path: Path, monkeypatch):
     paths = _mk_paths(tmp_path, repo)
     ensure_out_dirs(paths)
     _prepare_min_contracts(paths)
-    monkeypatch.setattr(lint_mod, "resolve_paths", lambda _: paths)
+    monkeypatch.setattr(lint_mod, "resolve_paths", lambda *args, **kwargs: paths)
     rc = cmd_lint(Namespace(repo_root=str(tmp_path), strict=True, profile="governed"))
     assert rc == GOVERNANCE_ERROR
     report = json.loads(read_text(paths.contracts_dir / "lint_report.json"))
@@ -69,7 +69,7 @@ def test_deterministic_now_env(monkeypatch, tmp_path: Path):
     paths = _mk_paths(tmp_path, repo)
     ensure_out_dirs(paths)
     _prepare_min_contracts(paths)
-    monkeypatch.setattr(lint_mod, "resolve_paths", lambda _: paths)
+    monkeypatch.setattr(lint_mod, "resolve_paths", lambda *args, **kwargs: paths)
     rc = cmd_lint(Namespace(repo_root=str(tmp_path), strict=False, profile="core"))
     assert rc == OK
     report = json.loads(read_text(paths.contracts_dir / "lint_report.json"))
@@ -80,7 +80,7 @@ def test_run_dry_run_blocked_by_default_and_event_written(tmp_path: Path, monkey
     repo = tmp_path / "repo"
     paths = _mk_paths(tmp_path, repo)
     ensure_out_dirs(paths)
-    monkeypatch.setattr(run_mod, "resolve_paths", lambda _: paths)
+    monkeypatch.setattr(run_mod, "resolve_paths", lambda *args, **kwargs: paths)
     _write_json(
         paths.plans_dir / "P0-000.task_packets.json",
         {"packets": [{"task_id": "P0-000", "lane_id": "A", "checkpoint_required": "CP-0", "checkpoint_status": "pending", "allowed_files": [], "forbidden_files": []}]},
@@ -112,7 +112,7 @@ def test_run_dry_run_allow_executor_on_block_with_fake_executor(tmp_path: Path, 
     )
     paths = _mk_paths(tmp_path, repo)
     ensure_out_dirs(paths)
-    monkeypatch.setattr(run_mod, "resolve_paths", lambda _: paths)
+    monkeypatch.setattr(run_mod, "resolve_paths", lambda *args, **kwargs: paths)
     _write_json(
         paths.plans_dir / "P0-000.task_packets.json",
         {"packets": [{"task_id": "P0-000", "lane_id": "A", "checkpoint_required": "CP-0", "checkpoint_status": "pending", "allowed_files": [], "forbidden_files": []}]},
@@ -155,7 +155,7 @@ def test_reconcile_fsm_invalid_transition_returns_governance_error(tmp_path: Pat
     (repo / ".ai/evidence/P0-000/command-log.txt").write_text("python -m pytest", encoding="utf-8")
     (repo / ".ai/evidence/P0-000/git-diff.patch").write_text("diff --git a/a b/a", encoding="utf-8")
     ensure_out_dirs(paths)
-    monkeypatch.setattr(rec_mod, "resolve_paths", lambda _: paths)
+    monkeypatch.setattr(rec_mod, "resolve_paths", lambda *args, **kwargs: paths)
     rc = cmd_reconcile(Namespace(repo_root=str(repo), task_id="P0-000", sync=False))
     assert rc == GOVERNANCE_ERROR
 

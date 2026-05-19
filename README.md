@@ -14,6 +14,7 @@
 ```powershell
 cd specforge
 python -m specforge.cli ingest --repo-root ..
+python -m specforge.cli --repo-root .. --out-root ../tmp/specforge-out ingest
 python -m specforge.cli normalize --repo-root ..
 python -m specforge.cli lint --repo-root ..
 python -m specforge.cli lint --repo-root .. --strict
@@ -86,6 +87,12 @@ These are intentionally stable JSON interfaces for downstream automation.
 - `standalone`: default for specforge tool-repo smoke checks.
 - `core`: universal schema/contract/drift checks only.
 - `governed`: strict AI governance checks for target repositories.
+- governed profile always enforces required governance contracts; `--strict` additionally makes WARN-only runs return non-zero.
+
+## Output root isolation
+
+- Use `--out-root <path>` to isolate artifacts per target/run.
+- If omitted, output defaults to `specforge/out/` for backward compatibility.
 
 ## Run safety behavior
 

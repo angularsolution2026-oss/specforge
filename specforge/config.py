@@ -18,20 +18,20 @@ class AppPaths:
     events_dir: Path | None = None
 
 
-def resolve_paths(repo_root: Path) -> AppPaths:
+def resolve_paths(repo_root: Path, out_root: Path | None = None) -> AppPaths:
     app_root = Path(__file__).resolve().parents[1]
-    out_root = app_root / "out"
+    resolved_out_root = out_root.resolve() if out_root is not None else (app_root / "out")
     return AppPaths(
         repo_root=repo_root.resolve(),
         app_root=app_root,
-        out_root=out_root,
-        inventory_dir=out_root / "inventory",
-        contracts_dir=out_root / "contracts",
-        plans_dir=out_root / "plans",
-        prompts_dir=out_root / "prompts",
-        runs_dir=out_root / "runs",
-        reconcile_dir=out_root / "reconcile",
-        events_dir=out_root / "events",
+        out_root=resolved_out_root,
+        inventory_dir=resolved_out_root / "inventory",
+        contracts_dir=resolved_out_root / "contracts",
+        plans_dir=resolved_out_root / "plans",
+        prompts_dir=resolved_out_root / "prompts",
+        runs_dir=resolved_out_root / "runs",
+        reconcile_dir=resolved_out_root / "reconcile",
+        events_dir=resolved_out_root / "events",
     )
 
 

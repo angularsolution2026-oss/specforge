@@ -86,7 +86,8 @@ def _route_parse_diagnostics(text: str) -> dict:
 
 
 def cmd_normalize(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
+    out_root = Path(args.out_root) if getattr(args, "out_root", None) else None
+    paths = resolve_paths(Path(args.repo_root), out_root=out_root)
     ensure_out_dirs(paths)
     warnings: list[str] = []
 

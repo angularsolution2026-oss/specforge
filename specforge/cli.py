@@ -17,6 +17,7 @@ from .commands import (
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="specforge - spec to contracts automation toolkit")
     parser.add_argument("--repo-root", default="..", help="Repository root that contains docs/.ai/tools/data")
+    parser.add_argument("--out-root", default=None, help="Optional output root for generated artifacts.")
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("ingest", help="Scan repo and emit machine-readable inventory.")

@@ -68,7 +68,8 @@ def _load_checkpoint_status(repo_root: Path, task_id: str, checkpoint: str) -> s
 
 
 def cmd_plan(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
+    out_root = Path(args.out_root) if getattr(args, "out_root", None) else None
+    paths = resolve_paths(Path(args.repo_root), out_root=out_root)
     ensure_out_dirs(paths)
     task_id = args.task_id
     packets: list[PlanTaskPacket] = []

@@ -28,3 +28,9 @@ def test_cli_parser_profiles_and_run_flags():
     assert args.profile == "governed"
     assert args.preflight_strict is True
     assert args.allow_executor_on_block is True
+
+
+def test_cli_parser_accepts_out_root():
+    parser = build_parser()
+    args = parser.parse_args(["--repo-root", ".", "--out-root", "C:/tmp/specforge-out", "normalize"])
+    assert args.out_root == "C:/tmp/specforge-out"

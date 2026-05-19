@@ -11,7 +11,8 @@ from ..utils import now_iso, write_json
 
 
 def cmd_lint(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
+    out_root = Path(args.out_root) if getattr(args, "out_root", None) else None
+    paths = resolve_paths(Path(args.repo_root), out_root=out_root)
     ensure_out_dirs(paths)
     strict = bool(getattr(args, "strict", False))
     profile = str(getattr(args, "profile", "standalone"))
@@ -23,7 +24,9 @@ def cmd_lint(args: Namespace) -> int:
         status = "FAIL"
     else:
         if profile == "governed":
-            run_governed_rules(paths, findings, profile, strict=True if strict else True)
+            # Option A: governed profile always enforces required governance contracts.
+            governed_enforces_required_contracts = True
+            run_governed_rules(paths, findings, profile, strict=governed_enforces_required_contracts)
             run_project_rules(paths, findings, profile)
         elif profile == "standalone":
             # keep noise low for the tool repository itself
@@ -50,11 +53,15 @@ def cmd_lint(args: Namespace) -> int:
         else:
             status = "PASS"
 
-    if any(f.get("severity") == "FAIL" for f in findings):
+    has_fail = any(f.get("severity") == "FAIL" for f in findings)
+    has_warn = any(f.get("severity") == "WARN" for f in findings)
+    if has_fail:
         if any(f.get("rule_group") == "governed" for f in findings):
             code = GOVERNANCE_ERROR
         else:
             code = CONTRACT_ERROR
+    elif strict and has_warn:
+        code = CONTRACT_ERROR
     else:
         code = OK
 

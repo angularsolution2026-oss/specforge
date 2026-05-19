@@ -45,7 +45,8 @@ def _finalize(paths, task_id: str, status: str, steps: list[dict], artifact_chec
 
 
 def cmd_doctor(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
+    out_root = Path(args.out_root) if getattr(args, "out_root", None) else None
+    paths = resolve_paths(Path(args.repo_root), out_root=out_root)
     ensure_out_dirs(paths)
     task_id = args.task_id
     profile = str(getattr(args, "profile", "standalone"))
@@ -56,15 +57,16 @@ def cmd_doctor(args: Namespace) -> int:
 
     emit_event(paths, event_type="command_started", command="doctor", task_id=task_id, message="doctor started", data={"profile": profile})
 
+    out_args = ["--out-root", str(paths.out_root)] if out_root is not None else []
     pipeline = [
-        ("ingest", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "ingest"]),
-        ("normalize", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "normalize"]),
-        ("lint_profile", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "lint", "--profile", profile]),
-        ("plan", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "plan", "--task-id", task_id]),
-        ("prompt", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "prompt", "--task-id", task_id]),
+        ("ingest", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), *out_args, "ingest"]),
+        ("normalize", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), *out_args, "normalize"]),
+        ("lint_profile", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), *out_args, "lint", "--profile", profile]),
+        ("plan", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), *out_args, "plan", "--task-id", task_id]),
+        ("prompt", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), *out_args, "prompt", "--task-id", task_id]),
         (
             "reconcile",
-            [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "reconcile", "--task-id", task_id]
+            [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), *out_args, "reconcile", "--task-id", task_id]
             + (["--sync"] if args.sync else []),
         ),
     ]
@@ -79,6 +81,7 @@ def cmd_doctor(args: Namespace) -> int:
                     "specforge",
                     "--repo-root",
                     str(paths.repo_root),
+                    *out_args,
                     "run",
                     "--task-id",
                     task_id,
@@ -131,4 +134,3 @@ def cmd_doctor(args: Namespace) -> int:
         reason_code = GOVERNANCE_ERROR
 
     return _finalize(paths, task_id, status, steps, artifact_checks, governance_checks, evidence_checks, reason_code)
-
