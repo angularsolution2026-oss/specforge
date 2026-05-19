@@ -20,6 +20,37 @@ def _append_jsonl(path: Path, payload: dict) -> None:
         fh.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
+def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict:
+    files: list[str] = []
+    if evidence_dir.exists():
+        for p in sorted(evidence_dir.rglob("*")):
+            if not p.is_file():
+                continue
+            if repo_root is not None:
+                files.append(str(p.relative_to(repo_root)).replace("\\", "/"))
+            else:
+                files.append(p.name)
+    present = {Path(x).name for x in files}
+    required = {
+        "manifest": ["manifest.json"],
+        "quality_gate_proof": ["quality-gates.json", "lint_report.json"],
+        "command_log": ["command-log.txt", "run_report.json"],
+        "change_proof": ["changed-files.json", "git-diff.patch", "diff.patch"],
+    }
+    missing: list[str] = []
+    for group, candidates in required.items():
+        if not any(c in present for c in candidates):
+            missing.append(group)
+    return {
+        "exists": evidence_dir.exists(),
+        "file_count": len(files),
+        "files": files,
+        "required": required,
+        "missing": missing,
+        "sufficient": len(missing) == 0,
+    }
+
+
 def cmd_reconcile(args: Namespace) -> int:
     paths = resolve_paths(Path(args.repo_root))
     ensure_out_dirs(paths)
@@ -51,10 +82,8 @@ def cmd_reconcile(args: Namespace) -> int:
                 state_status = current_json.get("tasks", {}).get(task_id, {}).get("status", "unknown")
 
     evidence_dir = paths.repo_root / ".ai/evidence" / task_id
-    evidence_files = []
-    if evidence_dir.exists():
-        evidence_files = [str(p.relative_to(paths.repo_root)).replace("\\", "/") for p in sorted(evidence_dir.rglob("*")) if p.is_file()]
-    evidence_sufficient = bool(evidence_files)
+    evidence_eval = evaluate_evidence(evidence_dir, repo_root=paths.repo_root)
+    evidence_sufficient = bool(evidence_eval["sufficient"])
 
     report = {
         "generated_at": now_iso(),
@@ -65,12 +94,7 @@ def cmd_reconcile(args: Namespace) -> int:
         "task_state_mentions_task": task_id in task_state_md,
         "progress_mentions_task": task_id in progress,
         "task_graph_mentions_task": task_id in task_graph_md,
-        "evidence": {
-            "directory": str(evidence_dir.relative_to(paths.repo_root)).replace("\\", "/"),
-            "exists": evidence_dir.exists(),
-            "file_count": len(evidence_files),
-            "sufficient": evidence_sufficient,
-        },
+        "evidence": {"directory": str(evidence_dir.relative_to(paths.repo_root)).replace("\\", "/"), **evidence_eval},
         "recommendation": "",
     }
     if cp0 != "approved":

@@ -6,7 +6,7 @@ from argparse import Namespace
 from pathlib import Path
 
 from ..config import ensure_out_dirs, resolve_paths
-from ..utils import now_iso, read_text, write_json
+from ..utils import extract_table_routes, extract_tree_routes, now_iso, read_text, write_json
 from ..validators import validate_contract_bundle
 
 
@@ -176,6 +176,79 @@ def cmd_lint(args: Namespace) -> int:
             tasks = checkpoints.get("tasks", {})
             if "P0-000" not in tasks:
                 _add(findings, "WARN", "missing_p0_checkpoint_policy", "Missing P0-000 checkpoint policy")
+
+        spec06 = paths.repo_root / "docs/spec/06-app-router-structure.md"
+        website = paths.repo_root / "docs/spec/website-structure.md"
+        if spec06.exists() or website.exists():
+            source_routes: set[str] = set()
+            for p in (spec06, website):
+                if not p.exists():
+                    continue
+                txt = read_text(p)
+                source_routes.update(extract_table_routes(txt))
+                source_routes.update(extract_tree_routes(txt))
+            source_routes = {
+                r
+                for r in source_routes
+                if r.startswith("/")
+                and not r.startswith("/api")
+                and "/page" not in r
+                and " " not in r
+                and "http" not in r.lower()
+            }
+            contract_routes = {r.get("route", "") for r in routes if isinstance(r, dict)}
+            missing_routes = sorted(r for r in source_routes if r not in contract_routes)
+            if missing_routes:
+                _add(
+                    findings,
+                    "WARN",
+                    "route_drift_missing_in_contracts",
+                    "Source routes missing in route_contracts.json",
+                    count=len(missing_routes),
+                    sample=missing_routes[:10],
+                )
+
+        spec00 = paths.repo_root / "docs/spec/00-master-instruction.md"
+        api_source_text = ""
+        for p in (spec06, spec00):
+            if p.exists():
+                api_source_text += "\n" + read_text(p)
+        if api_source_text.strip():
+            source_apis = set(re.findall(r"\b(GET|POST|PUT|PATCH|DELETE)\s+(/api/[a-zA-Z0-9_/\-\[\]]+)", api_source_text))
+            contract_apis = {(a.get("method", ""), a.get("endpoint", "")) for a in apis if isinstance(a, dict)}
+            missing_apis = sorted(source_apis - contract_apis)
+            if missing_apis:
+                _add(
+                    findings,
+                    "WARN",
+                    "api_drift_missing_in_contracts",
+                    "Source APIs missing in api_contracts.json",
+                    count=len(missing_apis),
+                    sample=[f"{m} {e}" for m, e in missing_apis[:10]],
+                )
+
+        enum_registry = _load_json(paths.contracts_dir / "enum_registry.json")
+        if isinstance(enum_registry, dict) and not enum_registry:
+            _add(findings, "WARN", "enum_registry_empty", "enum_registry.json is empty")
+
+        inv_demo = paths.repo_root / "data/seeds/inventory-lots.demo.json"
+        if inv_demo.exists():
+            try:
+                inv = _load_json(inv_demo)
+                lots = inv.get("inventory_lots", []) if isinstance(inv, dict) else []
+                statuses = {x.get("status", "") for x in lots if isinstance(x, dict)}
+                allowed_status = {"available", "holding", "deposited", "sold", "hidden"}
+                unknown = sorted(s for s in statuses if s and s not in allowed_status)
+                if unknown:
+                    _add(
+                        findings,
+                        "WARN",
+                        "seed_enum_mismatch_inventory_status",
+                        "inventory_lots.demo has unknown status values",
+                        values=unknown,
+                    )
+            except Exception as exc:
+                _add(findings, "WARN", "seed_enum_mismatch_inventory_status", f"Failed parsing seed file: {exc}")
 
     has_fail = any(f["severity"] == "FAIL" for f in findings)
     has_warn = any(f["severity"] == "WARN" for f in findings)

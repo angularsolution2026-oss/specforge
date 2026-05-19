@@ -47,7 +47,13 @@ def discover_files(root: Path, patterns: Iterable[str]) -> list[Path]:
 
 
 def extract_routes(text: str) -> list[str]:
-    return sorted(set(re.findall(r"/[a-zA-Z0-9\-\[\]/]+", text)))
+    routes: set[str] = set()
+    for m in re.findall(r"/(?:[a-zA-Z0-9\-\[\]/]+)?", text):
+        if m == "":
+            continue
+        if m == "/" or len(m) > 1:
+            routes.add(m)
+    return sorted(routes)
 
 
 def extract_table_routes(text: str) -> list[str]:

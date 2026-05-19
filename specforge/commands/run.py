@@ -14,64 +14,61 @@ def _load_json(path: Path) -> dict:
     return json.loads(read_text(path))
 
 
-def cmd_run(args: Namespace) -> int:
-    paths = resolve_paths(Path(args.repo_root))
-    ensure_out_dirs(paths)
-    task_id = args.task_id
-    mode = args.mode
+def checkpoint_is_approved(checkpoint_required: str, checkpoint_status: object) -> bool:
+    if not checkpoint_required:
+        return True
+    if checkpoint_status is None:
+        return False
+    if not isinstance(checkpoint_status, str):
+        return False
+    return checkpoint_status.strip() == "approved"
 
-    packet_path = paths.plans_dir / f"{task_id}.task_packets.json"
-    lint_path = paths.contracts_dir / "lint_report.json"
-    ownership_path = paths.contracts_dir / "ownership_contracts.json"
+
+def evaluate_runtime_preflight(
+    packets: list[dict],
+    lint_status: str,
+    denied_patterns: list[str],
+    mode: str,
+) -> dict:
+    checkpoint_failures: list[dict] = []
+    file_conflicts: list[dict] = []
+    ownership_conflicts: list[dict] = []
+
+    for p in packets:
+        task_id = p.get("task_id", "")
+        lane_id = p.get("lane_id", "")
+        cp_req = p.get("checkpoint_required", "")
+        cp_status = p.get("checkpoint_status")
+        if not checkpoint_is_approved(cp_req, cp_status):
+            checkpoint_failures.append(
+                {
+                    "task_id": task_id,
+                    "lane_id": lane_id,
+                    "checkpoint_required": cp_req,
+                    "checkpoint_status": cp_status,
+                }
+            )
+        allowed = set(p.get("allowed_files", []))
+        forbidden = set(p.get("forbidden_files", []))
+        overlap = sorted(allowed & forbidden)
+        if overlap:
+            file_conflicts.append({"task_id": task_id, "lane_id": lane_id, "overlap": overlap})
+        for f in p.get("allowed_files", []):
+            if any(Path(f).match(rule) for rule in denied_patterns):
+                ownership_conflicts.append({"task_id": task_id, "lane_id": lane_id, "path": f})
 
     preflight = {
-        "task_packet_exists": packet_path.exists(),
-        "checkpoint_ok": False,
-        "allowed_forbidden_conflict": False,
-        "ownership_conflict": False,
-        "strict_lint_pass": False,
-        "notes": [],
+        "task_packet_exists": bool(packets),
+        "checkpoint_ok": len(checkpoint_failures) == 0,
+        "checkpoint_failures": checkpoint_failures,
+        "allowed_forbidden_conflict": len(file_conflicts) > 0,
+        "allowed_forbidden_conflicts": file_conflicts,
+        "ownership_conflict": len(ownership_conflicts) > 0,
+        "ownership_conflicts": ownership_conflicts,
+        "strict_lint_pass": lint_status == "PASS",
     }
 
-    if packet_path.exists():
-        packets = _load_json(packet_path).get("packets", [])
-        cp_bad = False
-        file_conflict = False
-        for p in packets:
-            cp_req = p.get("checkpoint_required", "")
-            cp_status = p.get("checkpoint_status", "")
-            if cp_req and cp_status and cp_status != "approved":
-                cp_bad = True
-            allowed = set(p.get("allowed_files", []))
-            forbidden = set(p.get("forbidden_files", []))
-            if allowed & forbidden:
-                file_conflict = True
-        preflight["checkpoint_ok"] = not cp_bad
-        preflight["allowed_forbidden_conflict"] = file_conflict
-    else:
-        preflight["notes"].append("task_packet_missing")
-
-    if lint_path.exists():
-        lint = _load_json(lint_path)
-        preflight["strict_lint_pass"] = lint.get("status") == "PASS"
-    else:
-        preflight["notes"].append("lint_report_missing")
-
-    if ownership_path.exists() and packet_path.exists():
-        own = _load_json(ownership_path)
-        owners = own.get("owners", []) if isinstance(own, dict) else []
-        write_denied_paths = [x.get("path") for x in owners if x.get("write_policy") == "forbidden"]
-        packets = _load_json(packet_path).get("packets", [])
-        for p in packets:
-            for f in p.get("allowed_files", []):
-                if any(Path(f).match(rule) for rule in write_denied_paths):
-                    preflight["ownership_conflict"] = True
-                    break
-
-    preflight_findings = validate_runtime_preflight(preflight)
     blockers: list[str] = []
-    if preflight_findings:
-        blockers.extend([f["message"] for f in preflight_findings])
     if not preflight["task_packet_exists"]:
         blockers.append("task packet missing")
     if not preflight["checkpoint_ok"]:
@@ -82,6 +79,40 @@ def cmd_run(args: Namespace) -> int:
         blockers.append("ownership conflict detected")
     if mode == "execute" and not preflight["strict_lint_pass"]:
         blockers.append("strict lint is not PASS")
+    preflight["blockers"] = blockers
+    return preflight
+
+
+def cmd_run(args: Namespace) -> int:
+    paths = resolve_paths(Path(args.repo_root))
+    ensure_out_dirs(paths)
+    task_id = args.task_id
+    mode = args.mode
+
+    packet_path = paths.plans_dir / f"{task_id}.task_packets.json"
+    lint_path = paths.contracts_dir / "lint_report.json"
+    ownership_path = paths.contracts_dir / "ownership_contracts.json"
+
+    packets: list[dict] = []
+    if packet_path.exists():
+        packets = _load_json(packet_path).get("packets", [])
+
+    lint_status = ""
+    if lint_path.exists():
+        lint_status = str(_load_json(lint_path).get("status", ""))
+
+    denied_patterns: list[str] = []
+    if ownership_path.exists():
+        own = _load_json(ownership_path)
+        owners = own.get("owners", []) if isinstance(own, dict) else []
+        denied_patterns = [x.get("path") for x in owners if x.get("write_policy") == "forbidden" and x.get("path")]
+
+    preflight = evaluate_runtime_preflight(packets, lint_status, denied_patterns, mode)
+
+    preflight_findings = validate_runtime_preflight(preflight)
+    blockers: list[str] = list(preflight.get("blockers", []))
+    if preflight_findings:
+        blockers.extend([f["message"] for f in preflight_findings])
 
     code = 0
     output = ""

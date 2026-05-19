@@ -20,6 +20,9 @@ def _parse_route_rows(text: str, source: str) -> list[RouteContract]:
             continue
         route = ""
         for c in cells:
+            if c == "/":
+                route = "/"
+                break
             for m in re.findall(r"/[a-zA-Z0-9\-\[\]/]+", c):
                 route = m
                 break
