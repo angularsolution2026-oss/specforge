@@ -1,79 +1,29 @@
 {
-  "generated_at": "2026-05-19T14:04:09",
+  "generated_at": "2026-05-19T16:10:06",
   "task_id": "P0-000",
-  "status": "PASS",
+  "status": "FAIL",
   "steps": [
     {
       "step": "ingest",
       "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m specforge --repo-root F:\\260516-honghac ingest",
       "exit_code": 0,
-      "output": "WROTE=F:\\260516-honghac\\specforge\\out\\inventory\\repo_inventory.json\nFILE_COUNT=200\n"
+      "output": "WROTE=F:\\260516-honghac\\specforge\\out\\inventory\\repo_inventory.json\nFILE_COUNT=207\n"
     },
     {
       "step": "normalize",
       "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m specforge --repo-root F:\\260516-honghac normalize",
       "exit_code": 0,
-      "output": "WROTE_DIR=F:\\260516-honghac\\specforge\\out\\contracts\nROUTES=98 APIS=4 ENUM_KEYS=13\n"
+      "output": "WROTE_DIR=F:\\260516-honghac\\specforge\\out\\contracts\nROUTES=98 APIS=4 ENUM_KEYS=13\nWARNINGS=3\nWARN=CANONICAL_AUTHORITY.json missing\nWARN=FILE_OWNERSHIP_MAP.json missing\nWARN=TASK_GRAPH.json missing\n"
     },
     {
       "step": "lint_strict",
       "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m specforge --repo-root F:\\260516-honghac lint --strict",
-      "exit_code": 0,
-      "output": "STATUS=PASS\nFINDINGS=0\nWROTE=F:\\260516-honghac\\specforge\\out\\contracts\\lint_report.json\n"
-    },
-    {
-      "step": "plan",
-      "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m specforge --repo-root F:\\260516-honghac plan --task-id P0-000",
-      "exit_code": 0,
-      "output": "WROTE=F:\\260516-honghac\\specforge\\out\\plans\\P0-000.task_packets.json\nPACKETS=5\n"
-    },
-    {
-      "step": "prompt",
-      "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m specforge --repo-root F:\\260516-honghac prompt --task-id P0-000",
-      "exit_code": 0,
-      "output": "WROTE=F:\\260516-honghac\\specforge\\out\\prompts\\P0-000.MASTER_PROMPT.md\n"
-    },
-    {
-      "step": "reconcile",
-      "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m specforge --repo-root F:\\260516-honghac reconcile --task-id P0-000",
-      "exit_code": 0,
-      "output": "WROTE=F:\\260516-honghac\\specforge\\out\\reconcile\\P0-000.reconcile_report.json\nCP0=pending\n"
-    },
-    {
-      "step": "run_dry-run",
-      "command": "C:\\Users\\thang.nq\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m specforge --repo-root F:\\260516-honghac run --task-id P0-000 --mode dry-run",
-      "exit_code": 0,
-      "output": "WROTE=F:\\260516-honghac\\specforge\\out\\runs\\P0-000.dry-run.run_report.json\nEXIT_CODE=0\n"
+      "exit_code": 1,
+      "output": "STATUS=FAIL\nFINDINGS=3\nWROTE=F:\\260516-honghac\\specforge\\out\\contracts\\lint_report.json\n"
     }
   ],
-  "artifact_checks": [
-    {
-      "artifact": "F:\\260516-honghac\\specforge\\out\\inventory\\repo_inventory.json",
-      "exists": true
-    },
-    {
-      "artifact": "F:\\260516-honghac\\specforge\\out\\contracts\\route_contracts.json",
-      "exists": true
-    },
-    {
-      "artifact": "F:\\260516-honghac\\specforge\\out\\contracts\\api_contracts.json",
-      "exists": true
-    },
-    {
-      "artifact": "F:\\260516-honghac\\specforge\\out\\contracts\\lint_report.json",
-      "exists": true
-    },
-    {
-      "artifact": "F:\\260516-honghac\\specforge\\out\\plans\\P0-000.task_packets.json",
-      "exists": true
-    },
-    {
-      "artifact": "F:\\260516-honghac\\specforge\\out\\prompts\\P0-000.MASTER_PROMPT.md",
-      "exists": true
-    },
-    {
-      "artifact": "F:\\260516-honghac\\specforge\\out\\reconcile\\P0-000.reconcile_report.json",
-      "exists": true
-    }
-  ]
+  "artifact_checks": [],
+  "governance_checks": [],
+  "evidence_checks": [],
+  "final_recommendation": "Not ready; fix findings first"
 }

@@ -1,5 +1,22 @@
 {
-  "generated_at": "2026-05-19T14:31:00",
-  "status": "PASS",
-  "findings": []
+  "generated_at": "2026-05-19T16:10:05",
+  "status": "FAIL",
+  "strict": true,
+  "findings": [
+    {
+      "severity": "FAIL",
+      "check": "canonical_authority_missing",
+      "message": "Missing canonical authority contract"
+    },
+    {
+      "severity": "FAIL",
+      "check": "ownership_contract_missing",
+      "message": "Missing ownership contract"
+    },
+    {
+      "severity": "FAIL",
+      "check": "task_graph_json_missing",
+      "message": "Missing task graph contract"
+    }
+  ]
 }

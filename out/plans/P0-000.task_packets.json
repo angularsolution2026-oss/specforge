@@ -1,13 +1,18 @@
 {
-  "generated_at": "2026-05-19T14:04:07",
+  "generated_at": "2026-05-19T16:09:51",
   "task_id": "P0-000",
+  "source": ".ai/tasks/P0-000.parallel-lanes.md",
   "packet_count": 5,
   "packets": [
     {
       "task_id": "P0-000",
+      "title": "Lane A",
       "lane_id": "A",
       "owner": "Architect Agent (lead), Security Agent, Backend Builder Agent (API stubs only)",
       "objective": "Execute lane A for P0-000",
+      "dependencies": [],
+      "checkpoint_required": "CP-0",
+      "checkpoint_status": "pending",
       "allowed_files": [
         "next.config.ts",
         "tsconfig.json",
@@ -27,8 +32,23 @@
         "docs/spec/**",
         "Wiring Firebase, Payload, Sentry in runtime"
       ],
+      "required_context": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md"
+      ],
       "required_gates": [
         "tier1"
+      ],
+      "stop_conditions": [
+        "Stop if checkpoint is not approved.",
+        "Stop on ownership conflict."
+      ],
+      "evidence_required": [
+        "lint_report",
+        "verification_footer"
+      ],
+      "validation_commands": [
+        "python -m specforge --repo-root . lint --strict"
       ],
       "refs": [
         ".ai/core/orchestration.md",
@@ -38,9 +58,13 @@
     },
     {
       "task_id": "P0-000",
+      "title": "Lane B",
       "lane_id": "B",
       "owner": "Frontend Builder Agent",
       "objective": "Execute lane B for P0-000",
+      "dependencies": [],
+      "checkpoint_required": "CP-0",
+      "checkpoint_status": "pending",
       "allowed_files": [
         "app/(marketing)/**",
         "app/(compliance)/**",
@@ -60,8 +84,23 @@
         "Real homepage sections, LeadForm, Header/Footer production UI",
         "Framer Motion` usage in pages"
       ],
+      "required_context": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md"
+      ],
       "required_gates": [
         "tier1"
+      ],
+      "stop_conditions": [
+        "Stop if checkpoint is not approved.",
+        "Stop on ownership conflict."
+      ],
+      "evidence_required": [
+        "lint_report",
+        "verification_footer"
+      ],
+      "validation_commands": [
+        "python -m specforge --repo-root . lint --strict"
       ],
       "refs": [
         ".ai/core/orchestration.md",
@@ -71,9 +110,13 @@
     },
     {
       "task_id": "P0-000",
+      "title": "Lane C",
       "lane_id": "C",
       "owner": "SEO Editor Agent",
       "objective": "Execute lane C for P0-000",
+      "dependencies": [],
+      "checkpoint_required": "CP-0",
+      "checkpoint_status": "pending",
       "allowed_files": [
         "app/sitemap.ts",
         "public/robots.txt",
@@ -89,8 +132,23 @@
         "Rendering schema on stubs",
         "Inventing meta copy for 1A routes"
       ],
+      "required_context": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md"
+      ],
       "required_gates": [
         "tier1"
+      ],
+      "stop_conditions": [
+        "Stop if checkpoint is not approved.",
+        "Stop on ownership conflict."
+      ],
+      "evidence_required": [
+        "lint_report",
+        "verification_footer"
+      ],
+      "validation_commands": [
+        "python -m specforge --repo-root . lint --strict"
       ],
       "refs": [
         ".ai/core/orchestration.md",
@@ -100,9 +158,13 @@
     },
     {
       "task_id": "P0-000",
+      "title": "Lane D",
       "lane_id": "D",
       "owner": "QA Auditor Agent (lead), Performance Agent",
       "objective": "Execute lane D for P0-000",
+      "dependencies": [],
+      "checkpoint_required": "CP-0",
+      "checkpoint_status": "pending",
       "allowed_files": [
         ".ai/tasks/P0-000.validation-report.md",
         "scripts/verify-phase0.ps1"
@@ -111,8 +173,23 @@
         "Feature implementation fixes outside failed gate scope",
         "Waiving Tier 1 failures"
       ],
+      "required_context": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md"
+      ],
       "required_gates": [
         "tier1"
+      ],
+      "stop_conditions": [
+        "Stop if checkpoint is not approved.",
+        "Stop on ownership conflict."
+      ],
+      "evidence_required": [
+        "lint_report",
+        "verification_footer"
+      ],
+      "validation_commands": [
+        "python -m specforge --repo-root . lint --strict"
       ],
       "refs": [
         ".ai/core/orchestration.md",
@@ -122,9 +199,13 @@
     },
     {
       "task_id": "P0-000",
+      "title": "Lane E",
       "lane_id": "E",
       "owner": "Orchestrator Agent",
       "objective": "Execute lane E for P0-000",
+      "dependencies": [],
+      "checkpoint_required": "CP-0",
+      "checkpoint_status": "pending",
       "allowed_files": [
         ".ai/planning/GAP_REGISTER.md",
         ".ai/planning/DECISION_LOG.md",
@@ -136,8 +217,23 @@
         "Application source except documented coordination",
         "Silent gap closure"
       ],
+      "required_context": [
+        ".ai/core/orchestration.md",
+        ".ai/governance/AGENT_HANDOFF_PROTOCOL.md"
+      ],
       "required_gates": [
         "tier1"
+      ],
+      "stop_conditions": [
+        "Stop if checkpoint is not approved.",
+        "Stop on ownership conflict."
+      ],
+      "evidence_required": [
+        "lint_report",
+        "verification_footer"
+      ],
+      "validation_commands": [
+        "python -m specforge --repo-root . lint --strict"
       ],
       "refs": [
         ".ai/core/orchestration.md",

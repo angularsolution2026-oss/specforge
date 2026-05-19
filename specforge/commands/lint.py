@@ -6,7 +6,7 @@ from argparse import Namespace
 from pathlib import Path
 
 from ..config import ensure_out_dirs, resolve_paths
-from ..utils import extract_table_routes, extract_tree_routes, now_iso, read_text, write_json
+from ..utils import now_iso, read_text, write_json
 from ..validators import validate_contract_bundle
 
 
@@ -14,9 +14,16 @@ def _load_json(path: Path) -> object:
     return json.loads(read_text(path))
 
 
+def _add(findings: list[dict], severity: str, check: str, message: str, **extra: object) -> None:
+    payload = {"severity": severity, "check": check, "message": message}
+    payload.update(extra)
+    findings.append(payload)
+
+
 def cmd_lint(args: Namespace) -> int:
     paths = resolve_paths(Path(args.repo_root))
     ensure_out_dirs(paths)
+    strict = bool(getattr(args, "strict", False))
     findings: list[dict] = []
 
     required = [
@@ -30,160 +37,154 @@ def cmd_lint(args: Namespace) -> int:
     for name in required:
         p = paths.contracts_dir / name
         if not p.exists():
-            findings.append({"severity": "FAIL", "check": "missing_contract", "file": name})
+            _add(findings, "FAIL", "missing_contract", f"Missing required contract: {name}", file=name)
 
     if not findings:
+        findings.extend(validate_contract_bundle(paths.contracts_dir))
+
         routes = _load_json(paths.contracts_dir / "route_contracts.json")
         apis = _load_json(paths.contracts_dir / "api_contracts.json")
         checkpoints = _load_json(paths.contracts_dir / "checkpoint_policy.json")
-        enum_registry = _load_json(paths.contracts_dir / "enum_registry.json")
         seed_manifest = _load_json(paths.contracts_dir / "seed_schema_manifest.json")
 
-        findings.extend(validate_contract_bundle(paths.contracts_dir))
+        ca = paths.contracts_dir / "canonical_authority.json"
+        own = paths.contracts_dir / "ownership_contracts.json"
+        tg = paths.contracts_dir / "task_graph_contracts.json"
+
+        if not ca.exists():
+            sev = "FAIL" if strict else "WARN"
+            _add(findings, sev, "canonical_authority_missing", "Missing canonical authority contract")
+        else:
+            ca_json = _load_json(ca)
+            canonical_root = ca_json.get("canonical_spec_root", "") if isinstance(ca_json, dict) else ""
+            if canonical_root and canonical_root != "FINAL_SPEC":
+                _add(
+                    findings,
+                    "WARN",
+                    "deprecated_spec_root_used_as_authority",
+                    f"canonical_spec_root is '{canonical_root}', expected FINAL_SPEC",
+                )
+
+        if not own.exists():
+            sev = "FAIL" if strict else "WARN"
+            _add(findings, sev, "ownership_contract_missing", "Missing ownership contract")
+
+        if not tg.exists():
+            sev = "FAIL" if strict else "WARN"
+            _add(findings, sev, "task_graph_json_missing", "Missing task graph contract")
+        else:
+            tg_json = _load_json(tg)
+            tasks = tg_json.get("tasks", []) if isinstance(tg_json, dict) else []
+            task_ids = {t.get("task_id", "") for t in tasks if isinstance(t, dict)}
+            for t in tasks:
+                if not isinstance(t, dict):
+                    continue
+                tid = t.get("task_id", "")
+                deps = t.get("dependencies", [])
+                for dep in deps:
+                    if dep not in task_ids:
+                        _add(
+                            findings,
+                            "FAIL" if strict else "WARN",
+                            "task_graph_dependency_unknown",
+                            f"Task {tid} depends on unknown task {dep}",
+                            task_id=tid,
+                            dependency=dep,
+                        )
+                allowed = set(t.get("allowed_files", []))
+                forbidden = set(t.get("forbidden_files", []))
+                overlap = sorted(allowed & forbidden)
+                if overlap:
+                    _add(
+                        findings,
+                        "FAIL",
+                        "task_allowed_file_conflicts_with_forbidden_file",
+                        f"Task {tid} has allowed/forbidden overlap",
+                        task_id=tid,
+                        overlap=overlap,
+                    )
+                if not t.get("checkpoint_required"):
+                    _add(
+                        findings,
+                        "WARN",
+                        "checkpoint_policy_missing_for_task",
+                        f"Task {tid} missing checkpoint_required",
+                        task_id=tid,
+                    )
+
+            # parallel overlap check (same dependency-set implies parallel bucket)
+            buckets: dict[str, list[dict]] = {}
+            for t in tasks:
+                deps = tuple(sorted(t.get("dependencies", []))) if isinstance(t, dict) else tuple()
+                buckets.setdefault("|".join(deps), []).append(t)
+            for _, bucket in buckets.items():
+                for i in range(len(bucket)):
+                    for j in range(i + 1, len(bucket)):
+                        ti = bucket[i]
+                        tj = bucket[j]
+                        ai = set(ti.get("allowed_files", []))
+                        aj = set(tj.get("allowed_files", []))
+                        overlap = sorted(ai & aj)
+                        if overlap:
+                            _add(
+                                findings,
+                                "WARN",
+                                "task_allowed_files_overlap_between_parallel_tasks",
+                                f"Parallel tasks {ti.get('task_id')} and {tj.get('task_id')} share allowed files",
+                                overlap=overlap[:10],
+                            )
+
+        if isinstance(seed_manifest, dict):
+            is_demo_guard = bool(seed_manifest.get("is_demo_rules_present"))
+            seed_files = seed_manifest.get("seed_files", [])
+            uses_demo = any(".demo." in f or f.endswith(".demo.json") for f in seed_files)
+            if uses_demo and not is_demo_guard:
+                _add(
+                    findings,
+                    "WARN",
+                    "seed_demo_file_used_without_demo_guard",
+                    "Demo seed file present but demo guard is not detected",
+                )
+
+        # streamlit README path check
+        readme = paths.app_root / "README.md"
+        wrapper_root = paths.app_root / "streamlit_wrapper.py"
+        wrapper_pkg = paths.app_root / "specforge" / "streamlit_wrapper.py"
+        if readme.exists():
+            text = read_text(readme)
+            mentions_pkg = "streamlit run specforge/streamlit_wrapper.py" in text
+            mentions_root = "streamlit run streamlit_wrapper.py" in text
+            mismatch = (mentions_pkg and not wrapper_pkg.exists()) or (mentions_root and not wrapper_root.exists())
+            if mismatch:
+                _add(
+                    findings,
+                    "FAIL",
+                    "streamlit_readme_path_mismatch",
+                    "README Streamlit command does not match wrapper file location",
+                )
 
         route_values = [r.get("route", "") for r in routes if isinstance(r, dict)]
         dupes = sorted({x for x in route_values if route_values.count(x) > 1})
         for d in dupes:
-            findings.append({"severity": "WARN", "check": "duplicate_route", "value": d})
+            _add(findings, "WARN", "duplicate_route", f"Duplicate route {d}", value=d)
 
         api_values = [f"{x.get('method','')} {x.get('endpoint','')}" for x in apis if isinstance(x, dict)]
         if not api_values:
-            findings.append({"severity": "WARN", "check": "api_contract_empty"})
+            _add(findings, "WARN", "api_contract_empty", "No API contracts found")
 
         if isinstance(checkpoints, dict):
             tasks = checkpoints.get("tasks", {})
             if "P0-000" not in tasks:
-                findings.append({"severity": "WARN", "check": "missing_p0_checkpoint_policy"})
+                _add(findings, "WARN", "missing_p0_checkpoint_policy", "Missing P0-000 checkpoint policy")
 
-        # cross-reference route drift against IA/spec routes
-        spec06 = paths.repo_root / "docs/spec/06-app-router-structure.md"
-        ia = paths.repo_root / "docs/spec/website-structure.md"
-        source_routes: set[str] = set()
-        for p in (spec06, ia):
-            if p.exists():
-                txt = read_text(p)
-                source_routes.update(extract_table_routes(txt))
-                source_routes.update(extract_tree_routes(txt))
-        source_routes = {
-            r
-            for r in source_routes
-            if r.startswith("/")
-            and "/page" not in r
-            and not r.startswith("/api")
-            and "?" not in r
-            and not re.search(r"[A-Z]", r)
-            and not any(tok in r for tok in ("/App", "/Swagger", "/Broker", "/batch"))
-        }
-        contract_routes = {r.rstrip("/") or "/" for r in route_values if r}
-        vocab: set[str] = set()
-        for cr in contract_routes:
-            for seg in cr.strip("/").split("/"):
-                if not seg:
-                    continue
-                if seg.startswith("[") and seg.endswith("]"):
-                    continue
-                vocab.add(seg)
+    has_fail = any(f["severity"] == "FAIL" for f in findings)
+    has_warn = any(f["severity"] == "WARN" for f in findings)
+    status = "FAIL" if has_fail else ("WARN" if has_warn else "PASS")
 
-        def plausible(route: str) -> bool:
-            segs = [s for s in route.strip("/").split("/") if s]
-            if not segs:
-                return True
-            for s in segs:
-                if s.startswith("[") and s.endswith("]"):
-                    continue
-                if s not in vocab:
-                    return False
-            return True
-
-        source_routes = {r for r in source_routes if plausible(r)}
-        ignored_roots = {"/admin", "/portals", "/broker", "/api"}
-
-        def is_container_root(route: str) -> bool:
-            if route in ignored_roots:
-                return True
-            return any(cr.startswith(route + "/") for cr in contract_routes)
-
-        missing_in_contracts = sorted(
-            r for r in source_routes if r and r not in contract_routes and not is_container_root(r)
-        )
-        if missing_in_contracts:
-            findings.append(
-                {
-                    "severity": "WARN",
-                    "check": "route_drift_missing_in_contracts",
-                    "count": len(missing_in_contracts),
-                    "sample": ", ".join(missing_in_contracts[:8]),
-                }
-            )
-
-        # API drift from spec text
-        spec_text = ""
-        for p in (spec06, paths.repo_root / "docs/spec/00-master-instruction.md"):
-            if p.exists():
-                spec_text += "\n" + read_text(p)
-        spec_api = set(re.findall(r"\b(GET|POST|PUT|PATCH|DELETE)\s+(/api/[a-zA-Z0-9_/\-\[\]]+)", spec_text))
-        contract_api = {(x.get("method", ""), x.get("endpoint", "")) for x in apis if isinstance(x, dict)}
-        missing_api = sorted(spec_api - contract_api)
-        if missing_api:
-            findings.append(
-                {
-                    "severity": "WARN",
-                    "check": "api_drift_missing_in_contracts",
-                    "count": len(missing_api),
-                    "sample": ", ".join([f"{m} {e}" for m, e in missing_api[:6]]),
-                }
-            )
-
-        # enum registry sanity
-        if isinstance(enum_registry, dict) and not enum_registry:
-            findings.append({"severity": "WARN", "check": "enum_registry_empty"})
-
-        # seed integrity checks
-        seeds_dir = paths.repo_root / "data/seeds"
-        declared = set(seed_manifest.get("seed_files", [])) if isinstance(seed_manifest, dict) else set()
-        actual = {p.name for p in seeds_dir.glob("*.json")} if seeds_dir.exists() else set()
-        if declared != actual:
-            findings.append(
-                {
-                    "severity": "WARN",
-                    "check": "seed_manifest_drift",
-                    "declared_only": ", ".join(sorted(declared - actual)) or "-",
-                    "actual_only": ", ".join(sorted(actual - declared)) or "-",
-                }
-            )
-
-        inv = seeds_dir / "inventory-lots.demo.json"
-        if inv.exists():
-            try:
-                data = _load_json(inv)
-                statuses = sorted({x.get("status", "") for x in data.get("inventory_lots", []) if isinstance(x, dict)})
-                allowed = {"available", "holding", "deposited", "sold", "hidden"}
-                unknown = [s for s in statuses if s and s not in allowed]
-                if unknown:
-                    findings.append(
-                        {
-                            "severity": "WARN",
-                            "check": "seed_enum_mismatch_inventory_status",
-                            "values": ", ".join(unknown),
-                        }
-                    )
-            except Exception as exc:
-                findings.append({"severity": "WARN", "check": "seed_parse_error", "file": "inventory-lots.demo.json", "error": str(exc)})
-
-    status = "PASS"
-    if any(f["severity"] == "FAIL" for f in findings):
-        status = "FAIL"
-    elif findings:
-        status = "WARN"
-
-    report = {"generated_at": now_iso(), "status": status, "findings": findings}
+    report = {"generated_at": now_iso(), "status": status, "strict": strict, "findings": findings}
     out = paths.contracts_dir / "lint_report.json"
     write_json(out, report)
     print(f"STATUS={status}")
     print(f"FINDINGS={len(findings)}")
     print(f"WROTE={out}")
-    if status == "FAIL":
-        return 1
-    if getattr(args, "strict", False) and findings:
-        return 1
-    return 0
+    return 1 if has_fail else 0

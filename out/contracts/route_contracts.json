@@ -1,13 +1,13 @@
 [
   {
     "route": "/",
-    "source": "docs/spec/00-master-instruction.md",
-    "priority": "P0",
-    "sprint": "1A"
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
   },
   {
     "route": "//bacninhhonghaccity",
-    "source": "docs/spec/website-structure.md",
+    "source": "docs/spec/00-master-instruction.md",
     "priority": "",
     "sprint": ""
   },
@@ -36,14 +36,32 @@
     "sprint": ""
   },
   {
+    "route": "/API/data",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/Broker",
+    "source": "docs/spec/06-app-router-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/PII/permission/security",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
     "route": "/SSR",
     "source": "docs/spec/website-structure.md",
     "priority": "",
     "sprint": ""
   },
   {
-    "route": "/`, `/kham-pha-do-thi",
-    "source": "docs/spec/website-structure.md",
+    "route": "/Telegram/webhook/revalidate/job",
+    "source": "docs/spec/00-master-instruction.md",
     "priority": "",
     "sprint": ""
   },
@@ -66,7 +84,7 @@
     "sprint": ""
   },
   {
-    "route": "/api/*",
+    "route": "/api",
     "source": "docs/spec/06-app-router-structure.md",
     "priority": "",
     "sprint": ""
@@ -96,12 +114,6 @@
     "sprint": ""
   },
   {
-    "route": "/bang-gia`, `/phap-ly`, `/kham-pha-do-thi`, etc.",
-    "source": "docs/spec/06-app-router-structure.md",
-    "priority": "",
-    "sprint": ""
-  },
-  {
     "route": "/blog",
     "source": "docs/spec/06-app-router-structure.md",
     "priority": "",
@@ -115,12 +127,6 @@
   },
   {
     "route": "/broker",
-    "source": "docs/spec/website-structure.md",
-    "priority": "",
-    "sprint": ""
-  },
-  {
-    "route": "/broker/*",
     "source": "docs/spec/06-app-router-structure.md",
     "priority": "",
     "sprint": ""
@@ -192,6 +198,12 @@
     "sprint": "2"
   },
   {
+    "route": "/drawer/form/interactive",
+    "source": "docs/spec/00-master-instruction.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
     "route": "/du-an/hong-hac-city",
     "source": "docs/spec/website-structure.md",
     "priority": "",
@@ -200,6 +212,12 @@
   {
     "route": "/fallback",
     "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/filter/sort/list/Kanban",
+    "source": "docs/spec/00-master-instruction.md",
     "priority": "",
     "sprint": ""
   },
@@ -218,6 +236,12 @@
   {
     "route": "/hidden",
     "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/hidden/deferred/experiment",
+    "source": "docs/spec/00-master-instruction.md",
     "priority": "",
     "sprint": ""
   },
@@ -348,19 +372,13 @@
     "sprint": ""
   },
   {
-    "route": "/phap-ly`, `/tien-do",
-    "source": "docs/spec/website-structure.md",
-    "priority": "",
-    "sprint": ""
-  },
-  {
     "route": "/phong-cach-song",
     "source": "docs/spec/00-master-instruction.md",
     "priority": "P1",
     "sprint": "1B"
   },
   {
-    "route": "/portals/*",
+    "route": "/portals",
     "source": "docs/spec/06-app-router-structure.md",
     "priority": "",
     "sprint": ""
@@ -368,6 +386,12 @@
   {
     "route": "/portals/admin",
     "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/product",
+    "source": "docs/spec/00-master-instruction.md",
     "priority": "",
     "sprint": ""
   },
@@ -393,7 +417,7 @@
     "route": "/sa-ban",
     "source": "docs/spec/00-master-instruction.md",
     "priority": "",
-    "sprint": "1A shell / 1B full"
+    "sprint": ""
   },
   {
     "route": "/sa-ban/[lot-id]",
@@ -402,26 +426,14 @@
     "sprint": "1B"
   },
   {
-    "route": "/sa-ban` có mặt trong top nav, homepage first viewport và footer decision path",
-    "source": "docs/spec/website-structure.md",
-    "priority": "",
-    "sprint": ""
-  },
-  {
-    "route": "/sa-ban`, `/phan-khu/hong-phat`, `/tu-van",
-    "source": "docs/spec/website-structure.md",
-    "priority": "",
-    "sprint": ""
-  },
-  {
-    "route": "/sa-ban`, `/sa-ban/[lot-id]",
-    "source": "docs/spec/website-structure.md",
-    "priority": "",
-    "sprint": ""
-  },
-  {
     "route": "/search",
     "source": "docs/spec/website-structure.md",
+    "priority": "",
+    "sprint": ""
+  },
+  {
+    "route": "/status/inventory/audit",
+    "source": "docs/spec/00-master-instruction.md",
     "priority": "",
     "sprint": ""
   },
@@ -498,12 +510,6 @@
     "sprint": ""
   },
   {
-    "route": "/tiem-nang`, `/tu-van",
-    "source": "docs/spec/website-structure.md",
-    "priority": "",
-    "sprint": ""
-  },
-  {
     "route": "/tien-do",
     "source": "docs/spec/00-master-instruction.md",
     "priority": "P1",
@@ -559,12 +565,6 @@
   },
   {
     "route": "/vay-mua",
-    "source": "docs/spec/website-structure.md",
-    "priority": "",
-    "sprint": "1B"
-  },
-  {
-    "route": "/vay-mua`, `/bang-gia",
     "source": "docs/spec/website-structure.md",
     "priority": "",
     "sprint": ""

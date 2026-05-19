@@ -29,7 +29,15 @@ python -m specforge.cli doctor --repo-root .. --task-id P0-000 --run-mode dry-ru
 ## Streamlit wrapper
 
 ```powershell
-streamlit run specforge/streamlit_wrapper.py
+pip install -e .[ui]
+streamlit run streamlit_wrapper.py
+```
+
+For tests:
+
+```powershell
+pip install -e .[dev]
+pytest
 ```
 
 The wrapper supports:

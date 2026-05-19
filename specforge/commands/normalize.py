@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import json
 import re
 from argparse import Namespace
 from pathlib import Path
 
 from ..config import ensure_out_dirs, resolve_paths
-from ..models import ApiContract, RouteContract, to_json
+from ..models import ApiContract, CanonicalAuthority, FileOwnershipMap, RouteContract, TaskGraph, to_json
 from ..utils import extract_routes, now_iso, read_text, write_json
 
 
@@ -17,7 +18,13 @@ def _parse_route_rows(text: str, source: str) -> list[RouteContract]:
         cells = [c.strip().strip("`") for c in line.strip("|").split("|")]
         if len(cells) < 2:
             continue
-        route = next((c for c in cells if c.startswith("/")), "")
+        route = ""
+        for c in cells:
+            for m in re.findall(r"/[a-zA-Z0-9\-\[\]/]+", c):
+                route = m
+                break
+            if route:
+                break
         if not route:
             continue
         priority = ""
@@ -45,9 +52,16 @@ def _canon_route(route: str) -> str:
     return route
 
 
+def _try_load_json(path: Path) -> dict | list | None:
+    if not path.exists():
+        return None
+    return json.loads(read_text(path))
+
+
 def cmd_normalize(args: Namespace) -> int:
     paths = resolve_paths(Path(args.repo_root))
     ensure_out_dirs(paths)
+    warnings: list[str] = []
 
     spec00 = paths.repo_root / "docs/spec/00-master-instruction.md"
     spec06 = paths.repo_root / "docs/spec/06-app-router-structure.md"
@@ -67,18 +81,21 @@ def cmd_normalize(args: Namespace) -> int:
         route_contracts.extend(_parse_route_rows(txt, str(p.relative_to(paths.repo_root)).replace("\\", "/")))
         api_contracts.extend(_parse_api_contracts(txt, str(p.relative_to(paths.repo_root)).replace("\\", "/")))
 
-    # fallback route discovery from IA free text
     ia_routes = []
     if ia.exists():
         ia_routes = extract_routes(read_text(ia))
     known = {r.route for r in route_contracts}
     for r in ia_routes:
+        r = r.strip().strip("`").split(",")[0].strip()
+        if any(ch.isspace() for ch in r):
+            continue
+        if not r.startswith("/"):
+            continue
         if r.startswith("/api/"):
             continue
         if r not in known:
             route_contracts.append(RouteContract(route=r, source="docs/spec/website-structure.md"))
 
-    # minimal enum registry from schema doc
     schema_path = paths.repo_root / "docs/spec/05-database-schema.md"
     if schema_path.exists():
         txt = read_text(schema_path)
@@ -86,19 +103,13 @@ def cmd_normalize(args: Namespace) -> int:
         for k in enum_keys:
             enum_registry[k] = []
 
-    gate_matrix = {
-        "generated_at": now_iso(),
-        "source": ".ai/core/quality-gates.md",
-        "tiers_detected": [],
-    }
+    gate_matrix = {"generated_at": now_iso(), "source": ".ai/core/quality-gates.md", "tiers_detected": []}
     if gates.exists():
         gtxt = read_text(gates)
         gate_matrix["tiers_detected"] = sorted(set(re.findall(r"Tier\s+([0-9A-Z\-]+)", gtxt)))
 
     checkpoint_policy = {"generated_at": now_iso(), "source": ".ai/state/checkpoints.json", "tasks": {}}
     if checkpoints.exists():
-        import json
-
         checkpoint_policy["tasks"] = json.loads(read_text(checkpoints)).get("tasks", {})
 
     seed_schema_manifest = {
@@ -128,6 +139,35 @@ def cmd_normalize(args: Namespace) -> int:
     write_json(paths.contracts_dir / "checkpoint_policy.json", checkpoint_policy)
     write_json(paths.contracts_dir / "seed_schema_manifest.json", seed_schema_manifest)
 
+    ca_path = paths.repo_root / ".ai/registry/CANONICAL_AUTHORITY.json"
+    own_path = paths.repo_root / ".ai/registry/FILE_OWNERSHIP_MAP.json"
+    tg_path = paths.repo_root / ".ai/tasks/TASK_GRAPH.json"
+
+    canonical = _try_load_json(ca_path)
+    if canonical is not None:
+        ca_model = CanonicalAuthority.model_validate(canonical)
+        write_json(paths.contracts_dir / "canonical_authority.json", ca_model.model_dump())
+    else:
+        warnings.append("CANONICAL_AUTHORITY.json missing")
+
+    ownership = _try_load_json(own_path)
+    if ownership is not None:
+        own_model = FileOwnershipMap.model_validate(ownership)
+        write_json(paths.contracts_dir / "ownership_contracts.json", own_model.model_dump())
+    else:
+        warnings.append("FILE_OWNERSHIP_MAP.json missing")
+
+    task_graph = _try_load_json(tg_path)
+    if task_graph is not None:
+        tg_model = TaskGraph.model_validate(task_graph)
+        write_json(paths.contracts_dir / "task_graph_contracts.json", tg_model.model_dump())
+    else:
+        warnings.append("TASK_GRAPH.json missing")
+
     print(f"WROTE_DIR={paths.contracts_dir}")
     print(f"ROUTES={len(route_contracts)} APIS={len(api_contracts)} ENUM_KEYS={len(enum_registry)}")
+    if warnings:
+        print(f"WARNINGS={len(warnings)}")
+        for w in warnings:
+            print(f"WARN={w}")
     return 0

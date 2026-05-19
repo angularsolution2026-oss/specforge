@@ -13,79 +13,71 @@ def _load_json(path: Path) -> dict:
     return json.loads(read_text(path))
 
 
+def _finalize(paths, task_id: str, status: str, steps: list[dict], artifact_checks: list[dict], governance: list[dict], evidence: list[dict]) -> int:
+    report = {
+        "generated_at": now_iso(),
+        "task_id": task_id,
+        "status": status,
+        "steps": steps,
+        "artifact_checks": artifact_checks,
+        "governance_checks": governance,
+        "evidence_checks": evidence,
+        "final_recommendation": "Ready for controlled execution" if status == "PASS" else "Not ready; fix findings first",
+    }
+    out_path = paths.runs_dir / f"{task_id}.doctor_report.json"
+    write_json(out_path, report)
+    print(f"STATUS={status}")
+    print(f"WROTE={out_path}")
+    return 0 if status == "PASS" else 1
+
+
 def cmd_doctor(args: Namespace) -> int:
     paths = resolve_paths(Path(args.repo_root))
     ensure_out_dirs(paths)
-
     task_id = args.task_id
     steps: list[dict] = []
+    artifact_checks: list[dict] = []
+    governance_checks: list[dict] = []
+    evidence_checks: list[dict] = []
 
-    # Step 1: ingest
-    cmd = [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "ingest"]
-    code, out = run(cmd, cwd=paths.app_root)
-    steps.append({"step": "ingest", "command": " ".join(cmd), "exit_code": code, "output": out})
-    if code != 0:
-        return _finalize(paths, task_id, steps, "FAIL")
+    pipeline = [
+        ("ingest", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "ingest"]),
+        ("normalize", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "normalize"]),
+        ("lint_strict", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "lint", "--strict"]),
+        ("plan", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "plan", "--task-id", task_id]),
+        ("prompt", [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "prompt", "--task-id", task_id]),
+        (
+            "reconcile",
+            [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "reconcile", "--task-id", task_id]
+            + (["--sync"] if args.sync else []),
+        ),
+    ]
 
-    # Step 2: normalize
-    cmd = [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "normalize"]
-    code, out = run(cmd, cwd=paths.app_root)
-    steps.append({"step": "normalize", "command": " ".join(cmd), "exit_code": code, "output": out})
-    if code != 0:
-        return _finalize(paths, task_id, steps, "FAIL")
-
-    # Step 3: strict lint
-    cmd = [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "lint", "--strict"]
-    code, out = run(cmd, cwd=paths.app_root)
-    steps.append({"step": "lint_strict", "command": " ".join(cmd), "exit_code": code, "output": out})
-    if code != 0:
-        return _finalize(paths, task_id, steps, "FAIL")
-
-    # Step 4: plan
-    cmd = [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "plan", "--task-id", task_id]
-    code, out = run(cmd, cwd=paths.app_root)
-    steps.append({"step": "plan", "command": " ".join(cmd), "exit_code": code, "output": out})
-    if code != 0:
-        return _finalize(paths, task_id, steps, "FAIL")
-
-    # Step 5: prompt
-    cmd = [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "prompt", "--task-id", task_id]
-    code, out = run(cmd, cwd=paths.app_root)
-    steps.append({"step": "prompt", "command": " ".join(cmd), "exit_code": code, "output": out})
-    if code != 0:
-        return _finalize(paths, task_id, steps, "FAIL")
-
-    # Step 6: reconcile (optional sync)
-    cmd = [sys.executable, "-m", "specforge", "--repo-root", str(paths.repo_root), "reconcile", "--task-id", task_id]
-    if args.sync:
-        cmd.append("--sync")
-    code, out = run(cmd, cwd=paths.app_root)
-    steps.append({"step": "reconcile", "command": " ".join(cmd), "exit_code": code, "output": out})
-    if code != 0:
-        return _finalize(paths, task_id, steps, "FAIL")
-
-    # Step 7: optional task run
     if args.run_mode:
-        cmd = [
-            sys.executable,
-            "-m",
-            "specforge",
-            "--repo-root",
-            str(paths.repo_root),
-            "run",
-            "--task-id",
-            task_id,
-            "--mode",
-            args.run_mode,
-        ]
-        code, out = run(cmd, cwd=paths.app_root)
-        steps.append({"step": f"run_{args.run_mode}", "command": " ".join(cmd), "exit_code": code, "output": out})
-        if code != 0:
-            return _finalize(paths, task_id, steps, "FAIL")
+        pipeline.append(
+            (
+                f"run_{args.run_mode}",
+                [
+                    sys.executable,
+                    "-m",
+                    "specforge",
+                    "--repo-root",
+                    str(paths.repo_root),
+                    "run",
+                    "--task-id",
+                    task_id,
+                    "--mode",
+                    args.run_mode,
+                ],
+            )
+        )
 
-    # Step 8: artifact consistency check
-    status = "PASS"
-    checks: list[dict] = []
+    for step_name, cmd in pipeline:
+        code, out = run(cmd, cwd=paths.app_root)
+        steps.append({"step": step_name, "command": " ".join(cmd), "exit_code": code, "output": out})
+        if code != 0:
+            return _finalize(paths, task_id, "FAIL", steps, artifact_checks, governance_checks, evidence_checks)
+
     expected = [
         paths.inventory_dir / "repo_inventory.json",
         paths.contracts_dir / "route_contracts.json",
@@ -95,34 +87,25 @@ def cmd_doctor(args: Namespace) -> int:
         paths.prompts_dir / f"{task_id}.MASTER_PROMPT.md",
         paths.reconcile_dir / f"{task_id}.reconcile_report.json",
     ]
+    status = "PASS"
     for p in expected:
-        checks.append({"artifact": str(p), "exists": p.exists()})
-        if not p.exists():
+        exists = p.exists()
+        artifact_checks.append({"artifact": str(p), "exists": exists})
+        if not exists:
             status = "FAIL"
 
     lint_report = _load_json(paths.contracts_dir / "lint_report.json")
-    if lint_report.get("status") != "PASS":
+    lint_ok = lint_report.get("status") == "PASS"
+    governance_checks.append({"name": "strict_lint_pass", "pass": lint_ok, "value": lint_report.get("status")})
+    if not lint_ok:
         status = "FAIL"
-        checks.append({"artifact": "lint_report.status", "value": lint_report.get("status"), "expected": "PASS"})
 
-    out = {
-        "generated_at": now_iso(),
-        "task_id": task_id,
-        "status": status,
-        "steps": steps,
-        "artifact_checks": checks,
-    }
-    out_path = paths.runs_dir / f"{task_id}.doctor_report.json"
-    write_json(out_path, out)
-    print(f"STATUS={status}")
-    print(f"WROTE={out_path}")
-    return 0 if status == "PASS" else 1
+    rec = _load_json(paths.reconcile_dir / f"{task_id}.reconcile_report.json")
+    cp_ok = rec.get("checkpoint_cp0_status") == "approved"
+    ev_ok = bool(rec.get("evidence", {}).get("sufficient"))
+    evidence_checks.append({"name": "checkpoint_cp0_approved", "pass": cp_ok})
+    evidence_checks.append({"name": "evidence_sufficient", "pass": ev_ok})
+    if not cp_ok or not ev_ok:
+        status = "FAIL"
 
-
-def _finalize(paths, task_id: str, steps: list[dict], status: str) -> int:
-    out = {"generated_at": now_iso(), "task_id": task_id, "status": status, "steps": steps}
-    out_path = paths.runs_dir / f"{task_id}.doctor_report.json"
-    write_json(out_path, out)
-    print(f"STATUS={status}")
-    print(f"WROTE={out_path}")
-    return 1
+    return _finalize(paths, task_id, status, steps, artifact_checks, governance_checks, evidence_checks)
