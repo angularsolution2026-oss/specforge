@@ -20,6 +20,15 @@ def _add(findings: list[dict], severity: str, check: str, message: str, **extra:
     findings.append(payload)
 
 
+def _standalone_strict_hint(check: str) -> str:
+    hints = {
+        "canonical_authority_missing": "Create .ai/registry/CANONICAL_AUTHORITY.json in target repo, or run non-strict mode for standalone smoke tests.",
+        "ownership_contract_missing": "Create .ai/registry/FILE_OWNERSHIP_MAP.json in target repo, or run non-strict mode for standalone smoke tests.",
+        "task_graph_json_missing": "Create .ai/tasks/TASK_GRAPH.json in target repo, or run non-strict mode for standalone smoke tests.",
+    }
+    return hints.get(check, "")
+
+
 def cmd_lint(args: Namespace) -> int:
     paths = resolve_paths(Path(args.repo_root))
     ensure_out_dirs(paths)
@@ -53,7 +62,8 @@ def cmd_lint(args: Namespace) -> int:
 
         if not ca.exists():
             sev = "FAIL" if strict else "WARN"
-            _add(findings, sev, "canonical_authority_missing", "Missing canonical authority contract")
+            msg = "Strict governance files are missing. This is expected for standalone specforge tool repo, but must be fixed in a governed target repo."
+            _add(findings, sev, "canonical_authority_missing", msg, hint=_standalone_strict_hint("canonical_authority_missing"))
         else:
             ca_json = _load_json(ca)
             canonical_root = ca_json.get("canonical_spec_root", "") if isinstance(ca_json, dict) else ""
@@ -67,11 +77,13 @@ def cmd_lint(args: Namespace) -> int:
 
         if not own.exists():
             sev = "FAIL" if strict else "WARN"
-            _add(findings, sev, "ownership_contract_missing", "Missing ownership contract")
+            msg = "Strict governance files are missing. This is expected for standalone specforge tool repo, but must be fixed in a governed target repo."
+            _add(findings, sev, "ownership_contract_missing", msg, hint=_standalone_strict_hint("ownership_contract_missing"))
 
         if not tg.exists():
             sev = "FAIL" if strict else "WARN"
-            _add(findings, sev, "task_graph_json_missing", "Missing task graph contract")
+            msg = "Strict governance files are missing. This is expected for standalone specforge tool repo, but must be fixed in a governed target repo."
+            _add(findings, sev, "task_graph_json_missing", msg, hint=_standalone_strict_hint("task_graph_json_missing"))
         else:
             tg_json = _load_json(tg)
             tasks = tg_json.get("tasks", []) if isinstance(tg_json, dict) else []

@@ -48,11 +48,25 @@ def discover_files(root: Path, patterns: Iterable[str]) -> list[Path]:
 
 def extract_routes(text: str) -> list[str]:
     routes: set[str] = set()
-    for m in re.findall(r"/(?:[a-zA-Z0-9\-\[\]/]+)?", text):
-        if m == "":
+    for line in text.splitlines():
+        s = line.strip()
+        if not s:
             continue
-        if m == "/" or len(m) > 1:
-            routes.add(m)
+        if "http://" in s.lower() or "https://" in s.lower():
+            continue
+        if s == "/":
+            routes.add("/")
+            continue
+        if "|" in s:
+            routes.update(extract_table_routes(s))
+            continue
+        if any(ch in s for ch in ("├", "└", "│", "─")):
+            routes.update(extract_tree_routes(s))
+            continue
+        m = re.fullmatch(r"/[a-zA-Z0-9\-\[\]/]+/?", s)
+        if m:
+            r = m.group(0).rstrip("/") or "/"
+            routes.add(r)
     return sorted(routes)
 
 
@@ -63,11 +77,17 @@ def extract_table_routes(text: str) -> list[str]:
             continue
         cells = [c.strip().strip("`") for c in line.strip("|").split("|")]
         for c in cells:
-            if not c.startswith("/"):
+            if "http://" in c.lower() or "https://" in c.lower():
+                continue
+            if c == "/":
+                routes.add("/")
                 continue
             if "/page" in c:
                 continue
-            routes.add(c.rstrip("/") or "/")
+            m = re.fullmatch(r"/[a-zA-Z0-9\-\[\]/]+/?", c)
+            if not m:
+                continue
+            routes.add((m.group(0).rstrip("/")) or "/")
     return sorted(routes)
 
 
@@ -77,11 +97,20 @@ def extract_tree_routes(text: str) -> list[str]:
     # ├── /sa-ban
     # │   └── /sa-ban/[lot-id]
     for line in text.splitlines():
-        m = re.search(r"[/][a-zA-Z0-9\-\[\]/]+", line)
-        if not m:
+        s = line.strip()
+        if "http://" in s.lower() or "https://" in s.lower():
             continue
-        r = m.group(0).strip()
-        if "/page" in r:
+        tokens = re.findall(r"(?:^|[\s│├└─>])(/(?:[a-zA-Z0-9\-\[\]/]+)?)", s)
+        if not tokens:
             continue
-        routes.add(r.rstrip("/") or "/")
+        for tok in tokens:
+            r = tok.strip()
+            if r == "/":
+                routes.add("/")
+                continue
+            if not re.fullmatch(r"/[a-zA-Z0-9\-\[\]/]+/?", r):
+                continue
+            if "/page" in r:
+                continue
+            routes.add(r.rstrip("/") or "/")
     return sorted(routes)

@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: python -m pip install -e .[dev]
+
+      - name: Run Pytest
+        run: python -m pytest
+
+      - name: Smoke Ingest
+        run: python -m specforge --repo-root . ingest
+
+      - name: Smoke Normalize
+        run: python -m specforge --repo-root . normalize
+
+      - name: Smoke Lint
+        run: python -m specforge --repo-root . lint
