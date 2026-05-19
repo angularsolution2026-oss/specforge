@@ -75,3 +75,34 @@ specforge/out/
 - `seed_schema_manifest.json`
 
 These are intentionally stable JSON interfaces for downstream automation.
+
+## Standalone Tool Repo vs Target Repo
+
+This repository is the Specforge tool itself. It does not need to contain product folders such as `.ai`, `docs/spec`, or `data/seeds`.
+
+Specforge inspects a target repository through `--repo-root`.
+
+- Standalone tool-repo smoke tests:
+  - `python -m pip install -e .[dev,ui]`
+  - `python -m pytest`
+  - `python -m specforge --repo-root . ingest`
+  - `python -m specforge --repo-root . normalize`
+  - `python -m specforge --repo-root . lint`
+- Governed target-repo execution:
+  - `python -m specforge --repo-root <path-to-target-repo> doctor --task-id P0-000`
+
+Notes:
+- `lint` in standalone mode is expected to run as a smoke test.
+- `lint --strict` may fail in standalone mode because governance files are intentionally absent.
+- Use a fixture target repo or a real governed repo to validate strict PASS behavior.
+
+## CI Behavior
+
+GitHub Actions CI validates the standalone tool repository by running:
+
+- `python -m pytest`
+- `python -m specforge --repo-root . ingest`
+- `python -m specforge --repo-root . normalize`
+- `python -m specforge --repo-root . lint`
+
+CI intentionally does not run `lint --strict` against the standalone tool repo to avoid false failures when governance fixtures are absent.

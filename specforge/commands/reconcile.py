@@ -38,16 +38,113 @@ def evaluate_evidence(evidence_dir: Path, repo_root: Path | None = None) -> dict
         "change_proof": ["changed-files.json", "git-diff.patch", "diff.patch"],
     }
     missing: list[str] = []
+    invalid: list[str] = []
+    weak: list[str] = []
     for group, candidates in required.items():
         if not any(c in present for c in candidates):
             missing.append(group)
+
+    def _read_json(p: Path) -> object | None:
+        try:
+            return json.loads(read_text(p))
+        except Exception:
+            return None
+
+    def _is_non_empty_text(p: Path) -> bool:
+        try:
+            return bool(read_text(p).strip())
+        except Exception:
+            return False
+
+    def _check_manifest(p: Path) -> None:
+        data = _read_json(p)
+        if data is None or not isinstance(data, dict):
+            invalid.append("manifest.json")
+            return
+        if not data:
+            weak.append("manifest.json:empty_object")
+            return
+        useful = {"task_id", "generated_at", "status", "files", "artifacts", "commands", "evidence"}
+        if not any(k in data for k in useful):
+            weak.append("manifest.json:missing_useful_keys")
+
+    def _check_quality_gates(p: Path) -> None:
+        data = _read_json(p)
+        if data is None or not isinstance(data, dict):
+            invalid.append(p.name)
+            return
+        useful = {"status", "gates", "results", "passed", "exit_code"}
+        if not any(k in data for k in useful):
+            weak.append(f"{p.name}:missing_useful_keys")
+
+    def _check_lint_report(p: Path) -> None:
+        data = _read_json(p)
+        if data is None or not isinstance(data, dict):
+            invalid.append("lint_report.json")
+            return
+        if "status" not in data:
+            weak.append("lint_report.json:missing_status")
+
+    def _check_run_report(p: Path) -> None:
+        data = _read_json(p)
+        if data is None or not isinstance(data, dict):
+            invalid.append("run_report.json")
+            return
+        if "exit_code" not in data:
+            weak.append("run_report.json:missing_exit_code")
+
+    def _check_changed_files(p: Path) -> None:
+        data = _read_json(p)
+        if data is None:
+            invalid.append("changed-files.json")
+            return
+        if isinstance(data, (list, dict)) and len(data) == 0:
+            invalid.append("changed-files.json:empty")
+
+    def _check_patch(p: Path) -> None:
+        if not _is_non_empty_text(p):
+            invalid.append(p.name)
+
+    def _check_command_log(p: Path) -> None:
+        if not _is_non_empty_text(p):
+            invalid.append("command-log.txt")
+
+    if evidence_dir.exists():
+        manifest = evidence_dir / "manifest.json"
+        if manifest.exists():
+            _check_manifest(manifest)
+        qg = evidence_dir / "quality-gates.json"
+        lint = evidence_dir / "lint_report.json"
+        if qg.exists():
+            _check_quality_gates(qg)
+        elif lint.exists():
+            _check_lint_report(lint)
+        cmdlog = evidence_dir / "command-log.txt"
+        runrep = evidence_dir / "run_report.json"
+        if cmdlog.exists():
+            _check_command_log(cmdlog)
+        elif runrep.exists():
+            _check_run_report(runrep)
+        changed = evidence_dir / "changed-files.json"
+        gpatch = evidence_dir / "git-diff.patch"
+        dpatch = evidence_dir / "diff.patch"
+        if changed.exists():
+            _check_changed_files(changed)
+        elif gpatch.exists():
+            _check_patch(gpatch)
+        elif dpatch.exists():
+            _check_patch(dpatch)
+
+    sufficient = len(missing) == 0 and len(invalid) == 0
     return {
         "exists": evidence_dir.exists(),
         "file_count": len(files),
         "files": files,
         "required": required,
         "missing": missing,
-        "sufficient": len(missing) == 0,
+        "invalid": invalid,
+        "weak": weak,
+        "sufficient": sufficient,
     }
 
 
